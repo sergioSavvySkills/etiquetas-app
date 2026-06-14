@@ -2,7 +2,7 @@
   "_meta": {
     "titulo": "Matriz maestra de etiquetado alimentario",
     "base": "Reglamento (UE) 1169/2011",
-    "nota": "SEMILLA — versión reducida para desarrollar la UI. Se reemplaza por la versión completa de 55 sectores.",
+    "nota": "Versión completa: 55 sectores del PDF (1-40 y 50-55 como sectores de producto; 41-49 como certificaciones transversales).",
     "fuente": "docs/etiquetado-matriz-maestra.pdf"
   },
   "mencionesBase": [
@@ -288,6 +288,556 @@
       "preguntaUsuario": "¿Qué denominación protegida (DOP/IGP/ETG) ampara el producto?",
       "explicacion": "P. ej. «Queso Manchego DOP». La denominación protegida prevalece sobre otras menciones.",
       "baseLegal": "Reg. (UE) 1151/2012"
+    },
+    {
+      "id": "ultracongelado",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Mención «ultracongelado»",
+      "etiquetaLegal": "Mención «ultracongelado» y advertencia «no recongelar»",
+      "preguntaUsuario": "¿El producto es ultracongelado?",
+      "explicacion": "En productos ultracongelados hay que indicar «ultracongelado» y la advertencia «una vez descongelado, no volver a congelar».",
+      "baseLegal": "Directiva 89/108/CEE"
+    },
+    {
+      "id": "descongelado",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Mención «descongelado»",
+      "etiquetaLegal": "Mención «descongelado»",
+      "preguntaUsuario": "¿Se vende descongelado un producto que estuvo congelado?",
+      "explicacion": "Si vendes como fresco algo que se congeló antes (carne o pescado), debes añadir «descongelado».",
+      "baseLegal": "Anexo III"
+    },
+    {
+      "id": "peso_escurrido",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Peso neto escurrido",
+      "etiquetaLegal": "Peso neto escurrido (producto en líquido)",
+      "preguntaUsuario": "¿Qué peso queda tras escurrir el líquido?",
+      "explicacion": "En conservas y productos en líquido de cobertura hay que indicar también el peso sin el líquido. Por ejemplo: 150 g (escurrido 90 g).",
+      "baseLegal": "Anexo IX"
+    },
+    {
+      "id": "zona_fao",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Zona FAO y arte de pesca",
+      "etiquetaLegal": "Nombre comercial y científico, zona FAO, método y arte de pesca",
+      "preguntaUsuario": "¿Cuál es la zona FAO de captura y el arte de pesca?",
+      "explicacion": "Para pesca y acuicultura: nombre comercial y científico, si es «pescado» o «criado», la zona FAO y el arte (p. ej. arrastre, anzuelo).",
+      "baseLegal": "Reg. 1379/2013"
+    },
+    {
+      "id": "porcentaje_glaseado",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "% de glaseado",
+      "etiquetaLegal": "Porcentaje de glaseado (peso neto sin hielo)",
+      "preguntaUsuario": "¿Qué porcentaje de glaseado (capa de hielo) lleva?",
+      "explicacion": "En pescado y marisco congelado con capa de hielo, el peso neto se da sin el glaseado y se indica su porcentaje.",
+      "baseLegal": "Reg. 1379/2013"
+    },
+    {
+      "id": "porcentaje_carne",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "% de carne",
+      "etiquetaLegal": "Porcentaje de carne y de ingredientes destacados (QUID)",
+      "preguntaUsuario": "¿Qué porcentaje de carne contiene?",
+      "explicacion": "En preparados y embutidos hay que indicar el % de carne (regla QUID), igual que el % de un ingrediente que destaques en el nombre.",
+      "baseLegal": "Art. 22, Anexo VIII"
+    },
+    {
+      "id": "instrucciones_cocinado",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Instrucciones de cocinado",
+      "etiquetaLegal": "Modo de empleo / instrucciones de cocinado",
+      "preguntaUsuario": "¿Cómo debe cocinarse o prepararse?",
+      "explicacion": "Obligatorio cuando sin instrucciones sería difícil usarlo bien o de forma segura (p. ej. preparados cárnicos crudos, masas, precocinados).",
+      "baseLegal": "Art. 9.1.j y 27"
+    },
+    {
+      "id": "designacion_iberico",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Designación ibérico",
+      "etiquetaLegal": "Designación ibérico (bellota/cebo), raza y alimentación",
+      "preguntaUsuario": "Si es ibérico, ¿qué designación, raza y alimentación tiene?",
+      "explicacion": "Para el ibérico hay que indicar la categoría (bellota 100 % ibérico, bellota, cebo de campo, cebo), el % de raza ibérica y la alimentación.",
+      "baseLegal": "RD 4/2014 (Norma de Calidad del Ibérico)"
+    },
+    {
+      "id": "origen_leche",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Origen de la leche",
+      "etiquetaLegal": "País de ordeño y de envasado de la leche",
+      "preguntaUsuario": "¿En qué país se ordeñó y se envasó la leche?",
+      "explicacion": "En leche y productos lácteos hay que indicar el país de ordeño y el de transformación/envasado.",
+      "baseLegal": "Reg. 1308/2013"
+    },
+    {
+      "id": "tratamiento_termico_leche",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Tratamiento y materia grasa",
+      "etiquetaLegal": "Tratamiento térmico y % de materia grasa de la leche",
+      "preguntaUsuario": "¿Qué tratamiento (UHT, pasteurizada) y % de materia grasa tiene?",
+      "explicacion": "En leche líquida hay que indicar el tratamiento térmico (UHT, pasteurizada, esterilizada) y el contenido de materia grasa.",
+      "baseLegal": "Reg. 1308/2013; RD 1054/2003"
+    },
+    {
+      "id": "cultivos_vivos",
+      "tipo": "dato",
+      "obligatoria": false,
+      "autodeducible": false,
+      "etiquetaCorta": "Fermentos / cultivos vivos",
+      "etiquetaLegal": "Cultivos vivos y % de fruta en leches fermentadas",
+      "preguntaUsuario": "¿Lleva fermentos o cultivos vivos? ¿Qué % de fruta?",
+      "explicacion": "En yogures y leches fermentadas se suele indicar los cultivos vivos y, si lleva, el % de fruta.",
+      "baseLegal": "RD 271/2014 (yogur)"
+    },
+    {
+      "id": "denominacion_no_lactea",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Denominación no láctea",
+      "etiquetaLegal": "Denominación «bebida de [vegetal]» (no «leche»)",
+      "preguntaUsuario": "Confirma que usarás «bebida de [soja/avena…]» y no «leche»",
+      "explicacion": "Las bebidas vegetales no pueden llamarse «leche», «queso» o «yogur»; hay que usar «bebida de soja», «alternativa al yogur», etc.",
+      "baseLegal": "Reg. 1308/2013"
+    },
+    {
+      "id": "denominacion_pan",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Denominación legal del pan",
+      "etiquetaLegal": "Denominación del pan y % de harina integral",
+      "preguntaUsuario": "¿Qué tipo de pan es y cuánta harina integral lleva?",
+      "explicacion": "La norma del pan regula nombres como «pan común», «integral» o «multicereal»; «integral» exige 100 % de harina integral y, si es parcial, se indica el %.",
+      "baseLegal": "RD 308/2019 (calidad del pan)"
+    },
+    {
+      "id": "categoria_comercial",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Categoría y calibre",
+      "etiquetaLegal": "Categoría comercial y calibre",
+      "preguntaUsuario": "¿Qué categoría comercial y calibre tiene?",
+      "explicacion": "En conservas vegetales y frutas/hortalizas se indica la categoría (extra, I, II) y el calibre.",
+      "baseLegal": "Reg. 543/2011; RD 2420/1978"
+    },
+    {
+      "id": "porcentaje_fruta",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "% de fruta y azúcares",
+      "etiquetaLegal": "% de fruta, azúcares totales y denominación (mermelada/confitura/jalea)",
+      "preguntaUsuario": "¿Qué % de fruta y de azúcares lleva?",
+      "explicacion": "En mermeladas y confituras hay que indicar el contenido de fruta y de azúcares totales; la denominación (mermelada, confitura, jalea, extra) depende de esos valores.",
+      "baseLegal": "RD 670/1990"
+    },
+    {
+      "id": "aviso_sulfitos",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Contiene sulfitos",
+      "etiquetaLegal": "Declaración «contiene sulfitos» (> 10 mg/kg)",
+      "preguntaUsuario": "¿Lleva sulfitos por encima de 10 mg/kg?",
+      "explicacion": "Si los sulfitos superan 10 mg/kg o 10 mg/L hay que declararlos como alérgeno (p. ej. en frutas desecadas, vinos, vinagres).",
+      "baseLegal": "Anexo II"
+    },
+    {
+      "id": "contiene_fenilalanina",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Contiene fenilalanina",
+      "etiquetaLegal": "Mención «contiene una fuente de fenilalanina» (aspartamo)",
+      "preguntaUsuario": "¿Lleva aspartamo o sal de aspartamo-acesulfamo?",
+      "explicacion": "Si lleva aspartamo hay que añadir «contiene una fuente de fenilalanina», importante para personas con fenilcetonuria.",
+      "baseLegal": "Anexo III"
+    },
+    {
+      "id": "aviso_polialcoholes",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Aviso de polialcoholes",
+      "etiquetaLegal": "Advertencia «el consumo excesivo puede tener efectos laxantes»",
+      "preguntaUsuario": "¿Lleva polialcoholes (polioles) por encima del 10 %?",
+      "explicacion": "Si lleva más de un 10 % de polialcoholes (sorbitol, maltitol, xilitol…) hay que avisar de su posible efecto laxante.",
+      "baseLegal": "Anexo III"
+    },
+    {
+      "id": "tipo_agua",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Tipo y origen del agua",
+      "etiquetaLegal": "Tipo de agua, composición mineral, origen y nº de autorización",
+      "preguntaUsuario": "¿Qué tipo de agua es y de qué manantial procede?",
+      "explicacion": "En aguas envasadas hay que indicar el tipo (mineral natural, de manantial), la composición mineral, el origen del manantial y el nº de autorización sanitaria.",
+      "baseLegal": "RD 1798/2010"
+    },
+    {
+      "id": "zumo_denominacion",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Tipo de zumo y % de fruta",
+      "etiquetaLegal": "Denominación del zumo y «sin azúcares añadidos»",
+      "preguntaUsuario": "¿Es zumo 100 %, néctar o a partir de concentrado?",
+      "explicacion": "Hay que indicar si es zumo (100 %), a partir de concentrado o néctar (con su % de fruta). En zumo 100 % es obligatorio «sin azúcares añadidos».",
+      "baseLegal": "RD 781/2013 (zumos)"
+    },
+    {
+      "id": "categoria_aceite",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Categoría del aceite",
+      "etiquetaLegal": "Categoría legal, origen y campaña del aceite de oliva",
+      "preguntaUsuario": "¿Qué categoría de aceite de oliva es y de qué campaña?",
+      "explicacion": "Hay que indicar la categoría (AOVE, virgen, de oliva, de orujo), el origen (UE/no UE) y la campaña de recolección.",
+      "baseLegal": "Reg. Ej. 29/2012; Reg. 2568/91"
+    },
+    {
+      "id": "ingredientes_vino",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Ingredientes y nutricional del vino",
+      "etiquetaLegal": "Lista de ingredientes y declaración nutricional del vino (QR admitido)",
+      "preguntaUsuario": "¿Tienes la lista de ingredientes y la información nutricional del vino?",
+      "explicacion": "Desde diciembre de 2023 el vino debe llevar ingredientes y nutricional; el detalle puede ofrecerse mediante un código QR (etiquetado electrónico).",
+      "baseLegal": "Reg. (UE) 2021/2117"
+    },
+    {
+      "id": "categoria_espirituosa",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Categoría de espirituosa",
+      "etiquetaLegal": "Categoría legal de bebida espirituosa y envejecimiento",
+      "preguntaUsuario": "¿Qué categoría legal es (whisky, ron, ginebra…)?",
+      "explicacion": "Las bebidas espirituosas usan denominaciones reguladas (whisky, ron, ginebra, vodka, brandy…) e indican el envejecimiento si lo declaran.",
+      "baseLegal": "Reg. (UE) 2019/787"
+    },
+    {
+      "id": "cacao_minimo",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "% de cacao",
+      "etiquetaLegal": "% mínimo de cacao y advertencia de grasas vegetales",
+      "preguntaUsuario": "¿Qué porcentaje de cacao tiene el chocolate?",
+      "explicacion": "El chocolate indica su % mínimo de cacao. Si lleva grasas vegetales distintas de la manteca de cacao, debe advertirlo de forma destacada.",
+      "baseLegal": "RD 1055/2003"
+    },
+    {
+      "id": "origen_floral_miel",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Origen de la miel",
+      "etiquetaLegal": "Origen floral y país(es) de origen de la miel",
+      "preguntaUsuario": "¿Cuál es el origen floral y el país de origen de la miel?",
+      "explicacion": "La miel indica su tipo floral (milflores, romero, azahar…) y el país o países de origen. Si es mezcla, se especifica.",
+      "baseLegal": "Directiva 2001/110/CE; RD 1049/2003"
+    },
+    {
+      "id": "tipo_torrefacto",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Tipo de café",
+      "etiquetaLegal": "Tipo de café (natural/torrefacto) y % de torrefacto",
+      "preguntaUsuario": "¿Es café natural, torrefacto o mezcla?",
+      "explicacion": "En café hay que indicar si es natural, torrefacto o mezcla, el % de torrefacto y si es descafeinado.",
+      "baseLegal": "RD 1231/1988"
+    },
+    {
+      "id": "no_medicamento",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "No es un medicamento",
+      "etiquetaLegal": "Mención de que no posee propiedades medicinales / no sustituye una dieta variada",
+      "preguntaUsuario": "Confirma que no atribuyes propiedades medicinales al producto",
+      "explicacion": "En infusiones, plantas y complementos no se pueden atribuir propiedades curativas; los complementos añaden «no sustituye una dieta equilibrada».",
+      "baseLegal": "Reg. 1924/2006"
+    },
+    {
+      "id": "codigo_huevo",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Código del huevo",
+      "etiquetaLegal": "Código en cáscara (0/1/2/3 + país + granja), categoría y calibre",
+      "preguntaUsuario": "¿Cuál es el código impreso en la cáscara y la categoría?",
+      "explicacion": "El primer dígito indica el sistema de cría (0 ecológico, 1 campero, 2 suelo, 3 jaula), seguido del país y la granja. Se añade categoría A y calibre (S/M/L/XL).",
+      "baseLegal": "Reg. 589/2008; RD 226/2008"
+    },
+    {
+      "id": "vrn_dosis",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Dosis diaria y % VRN",
+      "etiquetaLegal": "Dosis diaria recomendada, % VRN y advertencias del complemento",
+      "preguntaUsuario": "¿Cuál es la dosis diaria recomendada y el % VRN?",
+      "explicacion": "Los complementos alimenticios indican la dosis diaria, el % de los valores de referencia de nutrientes (VRN), «no superar la dosis» y «no sustituye una dieta variada».",
+      "baseLegal": "Directiva 2002/46/CE; RD 1487/2009"
+    },
+    {
+      "id": "ufc_cepas",
+      "tipo": "dato",
+      "obligatoria": false,
+      "autodeducible": false,
+      "etiquetaCorta": "UFC y cepas",
+      "etiquetaLegal": "Unidades formadoras de colonias (UFC) y cepas",
+      "preguntaUsuario": "¿Qué cepas de probióticos lleva y cuántas UFC?",
+      "explicacion": "En probióticos se suele indicar las cepas concretas y las UFC (unidades formadoras de colonias) por dosis, además de su conservación.",
+      "baseLegal": "Reg. 1924/2006"
+    },
+    {
+      "id": "aviso_lactancia",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Aviso de lactancia materna",
+      "etiquetaLegal": "Advertencia «la leche materna es el mejor alimento»",
+      "preguntaUsuario": "¿Es un preparado para lactantes (0-6 meses)?",
+      "explicacion": "Los preparados de inicio deben advertir que la lactancia materna es lo mejor y cumplir reglas estrictas de composición y preparación.",
+      "baseLegal": "Reg. Delegado (UE) 2016/127"
+    },
+    {
+      "id": "edad_minima_infantil",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Edad mínima recomendada",
+      "etiquetaLegal": "Edad mínima recomendada y «no añadir sal ni azúcar»",
+      "preguntaUsuario": "¿A partir de qué edad se recomienda?",
+      "explicacion": "En alimentos infantiles (potitos, papillas) hay que indicar la edad mínima recomendada y advertencias como «no añadir sal ni azúcar».",
+      "baseLegal": "Directiva 2006/125/CE"
+    },
+    {
+      "id": "supervision_medica",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Bajo control médico",
+      "etiquetaLegal": "Mención «bajo supervisión médica» (AUMP)",
+      "preguntaUsuario": "¿Es un alimento para usos médicos especiales (AUMP)?",
+      "explicacion": "Los alimentos para usos médicos especiales deben indicar que se usan bajo control médico y su indicación nutricional específica.",
+      "baseLegal": "Reg. Delegado (UE) 2016/128"
+    },
+    {
+      "id": "energia_por_toma",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Energía por toma",
+      "etiquetaLegal": "Energía por toma (200-400 kcal) y perfil nutricional",
+      "preguntaUsuario": "¿Cuántas kcal aporta cada toma del sustitutivo?",
+      "explicacion": "Los sustitutivos para control de peso indican la energía por ración (entre 200 y 400 kcal), su perfil nutricional y el nº máximo de tomas al día.",
+      "baseLegal": "Reg. Delegado (UE) 2017/1798"
+    },
+    {
+      "id": "novel_food_autorizado",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Nuevo alimento autorizado",
+      "etiquetaLegal": "Autorización como nuevo alimento y advertencias asociadas",
+      "preguntaUsuario": "¿El ingrediente es un nuevo alimento (insectos, algas, CBD…)?",
+      "explicacion": "Los nuevos alimentos requieren autorización previa de la UE; suelen llevar advertencias específicas (p. ej. reacción alérgica cruzada con crustáceos o ácaros en insectos).",
+      "baseLegal": "Reg. (UE) 2015/2283"
+    },
+    {
+      "id": "aviso_alergia_insectos",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Aviso alérgico insectos/algas",
+      "etiquetaLegal": "Advertencia de reacción alérgica cruzada",
+      "preguntaUsuario": "¿Contiene insectos o algas como nuevo alimento?",
+      "explicacion": "Productos con insectos deben avisar de posibles reacciones cruzadas con crustáceos, moluscos y ácaros; las algas, de su contenido en yodo.",
+      "baseLegal": "Reg. (UE) 2015/2283"
+    },
+    {
+      "id": "denominacion_no_carnica",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Denominación vegetal clara",
+      "etiquetaLegal": "Denominación no engañosa en sustitutos vegetales",
+      "preguntaUsuario": "Confirma que la denominación deja claro que es de origen vegetal",
+      "explicacion": "Los sustitutos vegetales no deben inducir a error: si usas «hamburguesa», «bacon» o «atún», debe quedar claro que es vegetal (p. ej. «a base de soja»).",
+      "baseLegal": "Art. 7; Reg. 1308/2013"
+    },
+    {
+      "id": "porcentaje_proteina_vegetal",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "% de proteína vegetal",
+      "etiquetaLegal": "% de proteína y alérgenos vegetales (soja, gluten)",
+      "preguntaUsuario": "¿Qué porcentaje de proteína vegetal tiene?",
+      "explicacion": "En proteínas y sustitutos vegetales (tofu, seitán, texturizados) se suele destacar el % de proteína e indicar alérgenos como soja o gluten.",
+      "baseLegal": "Art. 30; Reg. 1308/2013"
+    },
+    {
+      "id": "venta_granel",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Información en granel/vending",
+      "etiquetaLegal": "Información obligatoria visible antes de la compra (granel/vending)",
+      "preguntaUsuario": "¿Se vende a granel o en máquina de vending?",
+      "explicacion": "En venta a granel o vending, la denominación, los alérgenos y demás datos deben mostrarse junto al dispensador o en la máquina/web antes de comprar.",
+      "baseLegal": "Art. 44; RD 126/2015"
+    },
+    {
+      "id": "fecha_caza",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Especie y fecha de caza",
+      "etiquetaLegal": "Especie cinegética, fecha de caza y control veterinario",
+      "preguntaUsuario": "¿Qué especie es y en qué fecha se cazó?",
+      "explicacion": "En carne de caza hay que indicar la especie y la fecha; en jabalí, control veterinario de triquina, y advertir de posibles perdigones de plomo.",
+      "baseLegal": "Reg. 853/2004 Anexo III sección IV"
+    },
+    {
+      "id": "aviso_plomo_caza",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Aviso de perdigones",
+      "etiquetaLegal": "Advertencia por posible presencia de perdigones de plomo",
+      "preguntaUsuario": "¿La pieza se abatió con munición de plomo?",
+      "explicacion": "En caza menor abatida con perdigones conviene advertir de su posible presencia y de la exposición al plomo.",
+      "baseLegal": "Reg. 853/2004"
+    },
+    {
+      "id": "aviso_apicola",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Aviso de polen / alergias",
+      "etiquetaLegal": "Advertencia de alérgeno polen y dosis recomendada",
+      "preguntaUsuario": "¿El producto contiene polen, jalea real o propóleo?",
+      "explicacion": "Polen, jalea real y propóleo deben avisar del riesgo alérgico (asma, alergias) e indicar la dosis recomendada, sin atribuir propiedades medicinales.",
+      "baseLegal": "Directiva 2001/110/CE"
+    },
+    {
+      "id": "categoria_vinagre",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Tipo y acidez del vinagre",
+      "etiquetaLegal": "Tipo de vinagre, grado de acidez y sulfitos",
+      "preguntaUsuario": "¿Qué tipo de vinagre es y qué acidez tiene?",
+      "explicacion": "Los vinagres indican su tipo (de vino, balsámico, de Jerez…), el grado de acidez y, si procede, «contiene sulfitos».",
+      "baseLegal": "RD 661/2012"
+    },
+    {
+      "id": "vino_desalcoholizado",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Vino desalcoholizado",
+      "etiquetaLegal": "Denominación «vino desalcoholizado» (< 0,5 % vol.)",
+      "preguntaUsuario": "¿Es un vino sin alcohol o desalcoholizado?",
+      "explicacion": "Los vinos sin alcohol usan «vino desalcoholizado» (< 0,5 % vol.) o «vino parcialmente desalcoholizado», categoría regulada desde 2021.",
+      "baseLegal": "Reg. (UE) 2021/2117"
+    },
+    {
+      "id": "producto_montana",
+      "tipo": "declaracion",
+      "obligatoria": false,
+      "autodeducible": false,
+      "etiquetaCorta": "Producto de montaña",
+      "etiquetaLegal": "Mención facultativa de calidad «producto de montaña»",
+      "preguntaUsuario": "¿Usarás la mención «producto de montaña»?",
+      "explicacion": "Es voluntaria, pero si la usas debes cumplir las condiciones de altitud y origen de las materias primas y la elaboración.",
+      "baseLegal": "Reg. (UE) 1151/2012 (mención facultativa)"
+    },
+    {
+      "id": "sin_ogm",
+      "tipo": "declaracion",
+      "obligatoria": false,
+      "autodeducible": false,
+      "etiquetaCorta": "Sin OGM",
+      "etiquetaLegal": "Mención voluntaria «sin OGM» / «libre de OGM»",
+      "preguntaUsuario": "¿Usarás la mención «sin OGM»?",
+      "explicacion": "Es voluntaria y se rige por umbrales nacionales (en general 0,9 %) y trazabilidad reforzada (esquemas como VLOG, Ohne Gentechnik).",
+      "baseLegal": "Reg. 1829/2003; Reg. 1830/2003"
+    },
+    {
+      "id": "bienestar_animal",
+      "tipo": "declaracion",
+      "obligatoria": false,
+      "autodeducible": false,
+      "etiquetaCorta": "Bienestar animal",
+      "etiquetaLegal": "Etiquetado voluntario de bienestar animal",
+      "preguntaUsuario": "¿Usarás un sello de bienestar animal?",
+      "explicacion": "Es voluntario (p. ej. Welfair, AENOR Bienestar Animal); indica estrellas o niveles según las condiciones de cría certificadas.",
+      "baseLegal": "Reg. (CE) 1099/2009"
+    },
+    {
+      "id": "fairtrade_logo",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Logo Fairtrade y origen",
+      "etiquetaLegal": "Logo Fairtrade, código de productor y % de ingredientes certificados",
+      "preguntaUsuario": "¿Qué sello de comercio justo usarás y con qué código de productor?",
+      "explicacion": "El comercio justo (Fairtrade, WFTO, Rainforest Alliance) lleva su logo, el código del productor/cooperativa y el % de ingredientes certificados.",
+      "baseLegal": "Fairtrade International / WFTO"
+    },
+    {
+      "id": "artesano_justificado",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Mención «artesano» justificada",
+      "etiquetaLegal": "Mención «artesano» conforme a la carta artesana autonómica",
+      "preguntaUsuario": "¿Cuál es tu carta o registro de artesanía alimentaria?",
+      "explicacion": "La mención «artesano» debe estar amparada por la normativa autonómica de artesanía alimentaria (carta del artesano de tu comunidad).",
+      "baseLegal": "Normativa autonómica; RD 1086/2020"
+    },
+    {
+      "id": "contraetiqueta_consejo",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Contraetiqueta del Consejo",
+      "etiquetaLegal": "Nº de contraetiqueta numerada del Consejo Regulador",
+      "preguntaUsuario": "¿Tienes el nº de contraetiqueta del Consejo Regulador?",
+      "explicacion": "Muchas DOP/IGP exigen una contraetiqueta numerada emitida por el Consejo Regulador, que acredita el lote amparado.",
+      "baseLegal": "Reg. (UE) 1151/2012"
     }
   ],
   "sectores": [
@@ -306,8 +856,8 @@
         "Preparados cárnicos",
         "Conservas cárnicas"
       ],
-      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1337/2013", "Reg. 853/2004"],
-      "mencionesExtra": ["num_matadero", "pais_origen_carne"]
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1760/2000", "Reg. 1337/2013", "Reg. 853/2004", "RD 474/2014", "RD 4/2014"],
+      "mencionesExtra": ["num_matadero", "pais_origen_carne", "fecha_congelacion", "porcentaje_carne", "designacion_iberico", "instrucciones_cocinado", "peso_escurrido"]
     },
     {
       "id": "pesca",
@@ -321,10 +871,11 @@
         "Ahumados",
         "Salazones",
         "Surimi y derivados",
+        "Preparados de pescado",
         "Mariscos cocidos"
       ],
-      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1379/2013"],
-      "mencionesExtra": ["pais_origen_pescado", "fecha_congelacion"]
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1379/2013", "Reg. 853/2004", "Directiva 89/108/CEE"],
+      "mencionesExtra": ["pais_origen_pescado", "zona_fao", "fecha_congelacion", "descongelado", "porcentaje_glaseado", "peso_escurrido"]
     },
     {
       "id": "lacteo",
@@ -333,14 +884,16 @@
       "grupo": "general",
       "subcategorias": [
         "Leches líquidas",
+        "Leches en polvo y condensada",
         "Yogures y leches fermentadas",
         "Quesos",
         "Nata y mantequilla",
         "Postres lácteos",
-        "Helados lácteos"
+        "Helados lácteos",
+        "Bebidas vegetales (categoría aparte)"
       ],
-      "normativaBase": ["Reg. (UE) 1169/2011"],
-      "mencionesExtra": []
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1308/2013", "RD 271/2014", "Directiva 2001/114/CE"],
+      "mencionesExtra": ["origen_leche", "tratamiento_termico_leche", "cultivos_vivos", "denominacion_no_lactea"]
     },
     {
       "id": "panaderia",
@@ -355,62 +908,586 @@
         "Masas y bases",
         "Productos navideños"
       ],
-      "normativaBase": ["Reg. (UE) 1169/2011"],
-      "mencionesExtra": []
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 308/2019"],
+      "mencionesExtra": ["denominacion_pan", "instrucciones_cocinado"]
     },
     {
       "id": "frutas_hortalizas",
       "numero": 5,
       "nombre": "Frutas, hortalizas y derivados",
       "grupo": "general",
-      "subcategorias": ["IV gama", "V gama", "Conservas vegetales", "Mermeladas y confituras"],
-      "normativaBase": ["Reg. (UE) 1169/2011"],
-      "mencionesExtra": []
+      "subcategorias": [
+        "IV gama",
+        "V gama",
+        "Conservas vegetales",
+        "Mermeladas y confituras",
+        "Zumos y néctares",
+        "Frutas desecadas",
+        "Vegetales congelados",
+        "Patatas procesadas"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 2420/1978", "RD 670/1990", "RD 781/2013", "Directiva 89/108/CEE"],
+      "mencionesExtra": ["categoria_comercial", "peso_escurrido", "porcentaje_fruta", "aviso_sulfitos", "zumo_denominacion", "ultracongelado"]
     },
     {
       "id": "bebidas_no_alcoholicas",
       "numero": 6,
       "nombre": "Bebidas no alcohólicas",
       "grupo": "general",
-      "subcategorias": ["Aguas", "Refrescos", "Zumos y néctares", "Bebidas energéticas", "Isotónicas"],
-      "normativaBase": ["Reg. (UE) 1169/2011"],
-      "mencionesExtra": ["aviso_cafeina"]
+      "subcategorias": [
+        "Aguas envasadas",
+        "Refrescos",
+        "Bebidas energéticas",
+        "Bebidas isotónicas",
+        "Zumos envasados",
+        "Bebidas funcionales",
+        "Horchatas y granizados"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 650/2011", "RD 1798/2010", "RD 781/2013", "Reg. 1925/2006"],
+      "mencionesExtra": ["aviso_cafeina", "tipo_agua", "con_edulcorantes", "contiene_fenilalanina", "zumo_denominacion"]
     },
     {
       "id": "bebidas_alcoholicas",
       "numero": 7,
       "nombre": "Bebidas alcohólicas",
       "grupo": "general",
-      "subcategorias": ["Vinos", "Cervezas", "Destilados", "Licores", "Vermut"],
-      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1308/2013"],
-      "mencionesExtra": ["grado_alcoholico"]
+      "subcategorias": [
+        "Vinos",
+        "Cervezas",
+        "Sidras",
+        "Espirituosas",
+        "Bebidas aromatizadas"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1308/2013", "Reg. (UE) 2019/787", "Reg. (UE) 2019/33", "Reg. (UE) 251/2014", "Reg. (UE) 2021/2117"],
+      "mencionesExtra": ["grado_alcoholico", "ingredientes_vino", "categoria_espirituosa", "aviso_sulfitos"]
     },
     {
       "id": "aceites_grasas",
       "numero": 8,
       "nombre": "Aceites y grasas",
       "grupo": "general",
-      "subcategorias": ["Aceite de oliva", "Aceites de semillas", "Margarinas"],
-      "normativaBase": ["Reg. (UE) 1169/2011"],
-      "mencionesExtra": []
+      "subcategorias": [
+        "Aceites de oliva",
+        "Aceites de semillas",
+        "Aceites especiales",
+        "Mantecas y margarinas",
+        "Sprays de cocina"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. Ej. 29/2012", "Reg. 2568/91", "Reg. 1308/2013"],
+      "mencionesExtra": ["categoria_aceite"]
+    },
+    {
+      "id": "cereales_pasta",
+      "numero": 9,
+      "nombre": "Cereales, harinas, pasta, arroz y legumbres",
+      "grupo": "general",
+      "subcategorias": [
+        "Cereales de desayuno",
+        "Harinas",
+        "Pasta seca",
+        "Pasta fresca rellena",
+        "Arroz",
+        "Legumbres secas",
+        "Legumbres cocidas",
+        "Otros granos"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 677/2016", "RD 2181/1975", "RD 1551/2018", "RD 1644/2011", "Reg. 2017/2158"],
+      "mencionesExtra": ["categoria_comercial", "peso_escurrido"]
     },
     {
       "id": "platos_preparados",
       "numero": 10,
       "nombre": "Platos preparados y precocinados",
       "grupo": "general",
-      "subcategorias": ["Refrigerados", "Congelados", "Conservas", "Sopas y cremas"],
-      "normativaBase": ["Reg. (UE) 1169/2011"],
-      "mencionesExtra": []
+      "subcategorias": [
+        "Refrigerados",
+        "Congelados",
+        "Conservas",
+        "Deshidratados",
+        "Caldos y sopas"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 3484/2000", "Directiva 89/108/CEE"],
+      "mencionesExtra": ["instrucciones_cocinado", "ultracongelado", "peso_escurrido"]
+    },
+    {
+      "id": "snacks",
+      "numero": 11,
+      "nombre": "Snacks, aperitivos y frutos secos",
+      "grupo": "general",
+      "subcategorias": [
+        "Patatas fritas y snacks",
+        "Frutos secos",
+        "Aperitivos salados",
+        "Barritas"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 2017/2158", "RD 1230/2001", "Reg. 1924/2006"],
+      "mencionesExtra": ["categoria_comercial"]
     },
     {
       "id": "confiteria",
       "numero": 12,
       "nombre": "Confitería, chocolate y derivados",
       "grupo": "general",
-      "subcategorias": ["Chocolates", "Caramelos y gominolas", "Turrones", "Chicles"],
+      "subcategorias": [
+        "Chocolates en tableta",
+        "Bombones",
+        "Caramelos y gominolas",
+        "Crema de cacao",
+        "Cacao en polvo",
+        "Productos navideños"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 1055/2003", "RD 348/2011", "RD 1787/1982"],
+      "mencionesExtra": ["con_edulcorantes", "cacao_minimo", "contiene_fenilalanina", "aviso_polialcoholes"]
+    },
+    {
+      "id": "azucar_miel_edulcorantes",
+      "numero": 13,
+      "nombre": "Azúcar, miel y edulcorantes",
+      "grupo": "general",
+      "subcategorias": [
+        "Azúcares",
+        "Mieles",
+        "Edulcorantes",
+        "Jarabes y siropes"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Directiva 2001/110/CE", "RD 1049/2003", "Reg. 1333/2008"],
+      "mencionesExtra": ["origen_floral_miel", "con_edulcorantes", "contiene_fenilalanina", "aviso_polialcoholes"]
+    },
+    {
+      "id": "cafe_te_infusiones",
+      "numero": 14,
+      "nombre": "Café, té e infusiones",
+      "grupo": "general",
+      "subcategorias": [
+        "Cafés",
+        "Tés",
+        "Infusiones",
+        "Sucedáneos"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 1231/1988", "Directiva 1999/4/CE"],
+      "mencionesExtra": ["tipo_torrefacto", "no_medicamento"]
+    },
+    {
+      "id": "especias_salsas",
+      "numero": 15,
+      "nombre": "Especias, condimentos, salsas y vinagres",
+      "grupo": "general",
+      "subcategorias": [
+        "Especias y hierbas",
+        "Mezclas",
+        "Sales",
+        "Salsas frías",
+        "Salsas calientes/cocina",
+        "Vinagres",
+        "Caldos concentrados"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 1424/1983", "RD 858/1984", "RD 661/2012"],
+      "mencionesExtra": ["categoria_vinagre", "aviso_sulfitos"]
+    },
+    {
+      "id": "huevos_ovoproductos",
+      "numero": 16,
+      "nombre": "Huevos y ovoproductos",
+      "grupo": "general",
+      "subcategorias": [
+        "Huevos frescos",
+        "Ovoproductos"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 589/2008", "RD 226/2008", "Reg. 853/2004"],
+      "mencionesExtra": ["codigo_huevo"]
+    },
+    {
+      "id": "complementos_alimenticios",
+      "numero": 17,
+      "nombre": "Complementos alimenticios",
+      "grupo": "general",
+      "subcategorias": [
+        "Vitaminas y minerales",
+        "Probióticos",
+        "Plantas y fitoterapia",
+        "Deportivos",
+        "Adelgazantes",
+        "Omega 3 y otros"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Directiva 2002/46/CE", "RD 1487/2009", "Reg. 1924/2006"],
+      "mencionesExtra": ["vrn_dosis", "ufc_cepas", "no_medicamento"]
+    },
+    {
+      "id": "grupos_especificos",
+      "numero": 18,
+      "nombre": "Alimentos para grupos específicos",
+      "grupo": "general",
+      "subcategorias": [
+        "Lactantes",
+        "Infantiles",
+        "Médicos especiales (AUMP)",
+        "Control de peso"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 609/2013", "Reg. Delegado (UE) 2016/127", "Reg. Delegado (UE) 2016/128", "Reg. Delegado (UE) 2017/1798", "Directiva 2006/125/CE"],
+      "mencionesExtra": ["aviso_lactancia", "edad_minima_infantil", "supervision_medica", "energia_por_toma"]
+    },
+    {
+      "id": "ecologico_calidad",
+      "numero": 19,
+      "nombre": "Ecológico y calidad diferenciada (resumen)",
+      "grupo": "general",
+      "subcategorias": [
+        "BIO transversal",
+        "DOP/IGP/ETG transversal"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. (UE) 2018/848", "Reg. (UE) 1151/2012", "Reg. (UE) 2024/1143"],
+      "mencionesExtra": ["eco_eurohoja", "eco_codigo", "dop_logo", "contraetiqueta_consejo"]
+    },
+    {
+      "id": "nuevos_alimentos",
+      "numero": 20,
+      "nombre": "Nuevos alimentos (novel foods)",
+      "grupo": "general",
+      "subcategorias": [
+        "Insectos",
+        "Algas",
+        "Proteínas alternativas",
+        "Otros novel foods"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. (UE) 2015/2283"],
+      "mencionesExtra": ["novel_food_autorizado", "aviso_alergia_insectos", "denominacion_no_carnica"]
+    },
+    {
+      "id": "dieteticos_especiales",
+      "numero": 21,
+      "nombre": "Productos dietéticos / alimentación especial",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Productos para diabéticos",
+        "Bajo en sodio",
+        "Enriquecidos",
+        "Alimentos funcionales"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1924/2006", "Reg. 1333/2008"],
+      "mencionesExtra": ["con_edulcorantes", "contiene_fenilalanina", "aviso_polialcoholes", "no_medicamento"]
+    },
+    {
+      "id": "vegetariano_plant_based",
+      "numero": 22,
+      "nombre": "Vegetariano, vegano y plant-based",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Sustitutos cárnicos",
+        "Sustitutos lácteos veganos",
+        "Sustitutos del huevo",
+        "Helados vegetales"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1308/2013", "Reg. 2015/2283"],
+      "mencionesExtra": ["denominacion_no_carnica", "denominacion_no_lactea", "porcentaje_proteina_vegetal"]
+    },
+    {
+      "id": "heladeria",
+      "numero": 23,
+      "nombre": "Heladería",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Helados de crema",
+        "Helados de agua",
+        "Tartas heladas",
+        "Toppings y coberturas"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 618/1998"],
+      "mencionesExtra": ["ultracongelado", "con_edulcorantes"]
+    },
+    {
+      "id": "productos_mar_especiales",
+      "numero": 24,
+      "nombre": "Productos del mar derivados especiales",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Algas comestibles",
+        "Caviar y huevas",
+        "Étnicos del mar"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1379/2013", "Reg. 2015/2283", "Reg. 853/2004"],
+      "mencionesExtra": ["zona_fao", "novel_food_autorizado", "aviso_alergia_insectos"]
+    },
+    {
+      "id": "etnicos_internacionales",
+      "numero": 25,
+      "nombre": "Alimentos étnicos e internacionales",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Asiáticos",
+        "Mexicanos",
+        "Mediterráneos/árabes",
+        "Italianos",
+        "Indios"
+      ],
       "normativaBase": ["Reg. (UE) 1169/2011"],
-      "mencionesExtra": ["con_edulcorantes"]
+      "mencionesExtra": ["instrucciones_cocinado"]
+    },
+    {
+      "id": "navidenos_estacionales",
+      "numero": 26,
+      "nombre": "Productos navideños y estacionales",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Navidad",
+        "Halloween / San Valentín",
+        "Pascua"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 1787/1982"],
+      "mencionesExtra": ["cacao_minimo"]
+    },
+    {
+      "id": "charcuteria_loncheada",
+      "numero": 27,
+      "nombre": "Charcutería loncheada y rallada",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Rallados/desmenuzados",
+        "Loncheados",
+        "Mini formatos"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 474/2014"],
+      "mencionesExtra": ["porcentaje_carne", "designacion_iberico"]
+    },
+    {
+      "id": "kits_preparados",
+      "numero": 28,
+      "nombre": "Kits y preparados de cocina",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Kits de comida",
+        "Marinados y adobos",
+        "Bases preparadas",
+        "Rebozados"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": ["instrucciones_cocinado"]
+    },
+    {
+      "id": "lacteos_derivados",
+      "numero": 29,
+      "nombre": "Lácteos derivados específicos",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Suero lácteo",
+        "Productos para repostería",
+        "Bebidas lácteas",
+        "Cremas para café"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1308/2013"],
+      "mencionesExtra": ["origen_leche", "tratamiento_termico_leche"]
+    },
+    {
+      "id": "vegetales_fermentados",
+      "numero": 30,
+      "nombre": "Vegetales y fermentados",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Fermentados",
+        "Brotes y germinados",
+        "Setas envasadas"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": ["categoria_comercial"]
+    },
+    {
+      "id": "elaborados_huevo",
+      "numero": 31,
+      "nombre": "Productos elaborados con huevo",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Tortillas listas",
+        "Postres con huevo"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 1011/1981", "Reg. 853/2004"],
+      "mencionesExtra": ["instrucciones_cocinado"]
+    },
+    {
+      "id": "reposteria_ingredientes",
+      "numero": 32,
+      "nombre": "Repostería casera (ingredientes)",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Levaduras",
+        "Frutos secos para repostería",
+        "Coberturas y preparados"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": ["instrucciones_cocinado"]
+    },
+    {
+      "id": "gelatinas_espesantes",
+      "numero": 33,
+      "nombre": "Gelatinas, espesantes y técnicos",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Gelificantes",
+        "Espesantes",
+        "Levaduras nutricionales"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1333/2008"],
+      "mencionesExtra": ["instrucciones_cocinado"]
+    },
+    {
+      "id": "panaderia_congelada",
+      "numero": 34,
+      "nombre": "Panadería congelada (bake-off)",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Pan congelado",
+        "Bollería congelada"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 308/2019", "Directiva 89/108/CEE"],
+      "mencionesExtra": ["denominacion_pan", "ultracongelado", "instrucciones_cocinado"]
+    },
+    {
+      "id": "cbd_novel_recientes",
+      "numero": 35,
+      "nombre": "Productos con cannabidiol / novel foods recientes",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Cáñamo alimentario",
+        "Otros novel foods"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. (UE) 2015/2283"],
+      "mencionesExtra": ["novel_food_autorizado", "no_medicamento"]
+    },
+    {
+      "id": "infantiles_no_lactantes",
+      "numero": 36,
+      "nombre": "Productos infantiles (no lactantes)",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Snacks infantiles",
+        "Bebidas infantiles",
+        "Postres infantiles"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Directiva 2006/125/CE", "Reg. 609/2013"],
+      "mencionesExtra": ["edad_minima_infantil"]
+    },
+    {
+      "id": "bebidas_vegetales",
+      "numero": 37,
+      "nombre": "Bebidas vegetales (sector propio)",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Bebidas vegetales",
+        "Funcionales vegetales",
+        "Yogures vegetales"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1308/2013", "Reg. 1925/2006"],
+      "mencionesExtra": ["denominacion_no_lactea", "porcentaje_proteina_vegetal"]
+    },
+    {
+      "id": "helados_no_lacteos",
+      "numero": 38,
+      "nombre": "Helados y postres congelados no lácteos",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Sorbetes y postres"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 618/1998"],
+      "mencionesExtra": ["denominacion_no_lactea", "ultracongelado"]
+    },
+    {
+      "id": "granel_preenvasado",
+      "numero": 39,
+      "nombre": "Granel preenvasado para autoservicio",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Dispensadores supermercado"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": ["venta_granel"]
+    },
+    {
+      "id": "vending",
+      "numero": 40,
+      "nombre": "Vending",
+      "grupo": "complementario",
+      "subcategorias": [
+        "Snacks y bebidas vending"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 126/2015"],
+      "mencionesExtra": ["venta_granel"]
+    },
+    {
+      "id": "caza",
+      "numero": 50,
+      "nombre": "Caza y cinegéticos",
+      "grupo": "especial",
+      "subcategorias": [
+        "Caza mayor",
+        "Caza menor",
+        "Embutidos y conservas de caza"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 853/2004 Anexo III sección IV", "RD 474/2014"],
+      "mencionesExtra": ["fecha_caza", "aviso_plomo_caza", "porcentaje_carne", "pais_origen_carne"]
+    },
+    {
+      "id": "apicultura",
+      "numero": 51,
+      "nombre": "Apicultura y derivados",
+      "grupo": "especial",
+      "subcategorias": [
+        "Polen, jalea real, propóleo",
+        "Cera y mieles especiales"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Directiva 2001/110/CE", "Reg. 2015/2283"],
+      "mencionesExtra": ["aviso_apicola", "origen_floral_miel", "no_medicamento", "novel_food_autorizado"]
+    },
+    {
+      "id": "olivar",
+      "numero": 52,
+      "nombre": "Olivar (no aceite)",
+      "grupo": "especial",
+      "subcategorias": [
+        "Aceitunas de mesa",
+        "Patés de aceituna",
+        "Hojas de olivo"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 1230/2001", "Norma COI"],
+      "mencionesExtra": ["categoria_comercial", "no_medicamento"]
+    },
+    {
+      "id": "enologicos_vinagres",
+      "numero": 53,
+      "nombre": "Enológicos y vinagres especiales",
+      "grupo": "especial",
+      "subcategorias": [
+        "Vinagres DOP",
+        "Mostos y reducciones",
+        "Vinos sin alcohol"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1151/2012", "RD 661/2012", "Reg. 1308/2013", "Reg. (UE) 2021/2117"],
+      "mencionesExtra": ["categoria_vinagre", "aviso_sulfitos", "vino_desalcoholizado"]
+    },
+    {
+      "id": "conservas_gourmet",
+      "numero": 54,
+      "nombre": "Conservas gourmet",
+      "grupo": "especial",
+      "subcategorias": [
+        "Conservas premium"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "RD 474/2014"],
+      "mencionesExtra": ["peso_escurrido", "porcentaje_carne", "instrucciones_cocinado"]
+    },
+    {
+      "id": "otros_transversales",
+      "numero": 55,
+      "nombre": "Otros sectores transversales",
+      "grupo": "especial",
+      "subcategorias": [
+        "Productos de montaña",
+        "Sin OGM",
+        "Bienestar animal",
+        "Slow Food / Presidi",
+        "Km 0 / proximidad",
+        "Producción integrada",
+        "Eco no-UE"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. (UE) 1151/2012", "Reg. 1829/2003", "Reg. 1830/2003", "Reg. (UE) 2018/848"],
+      "mencionesExtra": ["producto_montana", "sin_ogm", "bienestar_animal"]
     }
   ],
   "certificaciones": [
@@ -418,50 +1495,64 @@
       "id": "halal",
       "nombre": "Halal",
       "normativa": ["Reg. (CE) 1099/2009", "UNE 142500"],
-      "sello": "Instituto Halal / JAKIM / GCC",
+      "sello": "Instituto Halal / JAKIM / MUI / GCC",
       "mencionesExtra": ["halal_certificado", "halal_sin_porcino"]
     },
     {
       "id": "kosher",
       "nombre": "Kosher",
       "normativa": ["Supervisión rabínica"],
-      "sello": "OU, KLBD, FCJE",
+      "sello": "OU, OK, Star-K, KLBD, Badatz, FCJE",
       "mencionesExtra": ["kosher_categoria"]
     },
     {
       "id": "eco",
       "nombre": "Ecológico / BIO",
-      "normativa": ["Reg. (UE) 2018/848"],
-      "sello": "Eurohoja + organismo de control",
+      "normativa": ["Reg. (UE) 2018/848", "Reg. Ej. (UE) 2021/1165"],
+      "sello": "Eurohoja + organismo de control (CAAE, CCPAE, CAERM…)",
       "mencionesExtra": ["eco_eurohoja", "eco_codigo"]
     },
     {
       "id": "vegano",
       "nombre": "Vegano / Vegetariano",
       "normativa": ["Acto delegado pendiente (art. 36.3.b)"],
-      "sello": "V-Label, Vegan Society",
-      "mencionesExtra": ["vegano_sello"]
+      "sello": "V-Label, Vegan Society, EVE Vegan",
+      "mencionesExtra": ["vegano_sello", "denominacion_no_carnica", "denominacion_no_lactea"]
     },
     {
       "id": "sin_gluten",
       "nombre": "Sin gluten / celíacos",
       "normativa": ["Reg. (UE) 828/2014"],
-      "sello": "Espiga barrada (FACE)",
+      "sello": "Espiga Barrada (FACE), ELS (AOECS)",
       "mencionesExtra": ["sin_gluten_umbral"]
     },
     {
       "id": "sin_lactosa",
       "nombre": "Sin lactosa",
-      "normativa": ["Criterio nacional"],
-      "sello": "—",
+      "normativa": ["Criterio nacional (< 0,01 g/100 g)"],
+      "sello": "Sello fabricante / ADILAC",
       "mencionesExtra": ["sin_lactosa_mencion"]
     },
     {
       "id": "dop_igp",
       "nombre": "DOP / IGP / ETG",
-      "normativa": ["Reg. (UE) 1151/2012"],
+      "normativa": ["Reg. (UE) 1151/2012", "Reg. (UE) 2024/1143"],
       "sello": "Logo UE DOP/IGP/ETG",
-      "mencionesExtra": ["dop_logo"]
+      "mencionesExtra": ["dop_logo", "contraetiqueta_consejo"]
+    },
+    {
+      "id": "artesano",
+      "nombre": "Productos artesanos",
+      "normativa": ["Normativa autonómica", "RD 1086/2020", "RD 4/2014"],
+      "sello": "Carta del Artesano CCAA, Slow Food",
+      "mencionesExtra": ["artesano_justificado"]
+    },
+    {
+      "id": "comercio_justo",
+      "nombre": "Comercio justo / Fairtrade",
+      "normativa": ["Fairtrade International", "WFTO"],
+      "sello": "Fairtrade, WFTO, Rainforest Alliance, UTZ",
+      "mencionesExtra": ["fairtrade_logo"]
     }
   ]
 }
