@@ -1,0 +1,467 @@
+{
+  "_meta": {
+    "titulo": "Matriz maestra de etiquetado alimentario",
+    "base": "Reglamento (UE) 1169/2011",
+    "nota": "SEMILLA — versión reducida para desarrollar la UI. Se reemplaza por la versión completa de 55 sectores.",
+    "fuente": "docs/etiquetado-matriz-maestra.pdf"
+  },
+  "mencionesBase": [
+    {
+      "id": "denominacion",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "campo": "nombreProducto",
+      "etiquetaCorta": "Nombre del producto",
+      "etiquetaLegal": "Denominación del alimento",
+      "preguntaUsuario": "¿Cómo se llama el producto?",
+      "explicacion": "Es el nombre legal o habitual que describe qué es (p. ej. «galletas de avena»), no la marca comercial.",
+      "baseLegal": "Art. 9.1.a y 17"
+    },
+    {
+      "id": "lista_ingredientes",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "campo": "ingredientes",
+      "etiquetaCorta": "Ingredientes",
+      "etiquetaLegal": "Lista de ingredientes",
+      "preguntaUsuario": "¿Qué lleva el producto?",
+      "explicacion": "Todos los ingredientes, de mayor a menor cantidad. Lo ordenamos por ti.",
+      "baseLegal": "Art. 9.1.b y 18"
+    },
+    {
+      "id": "alergenos",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "campo": "alergenos",
+      "etiquetaCorta": "Alérgenos",
+      "etiquetaLegal": "Alérgenos (14 de declaración obligatoria)",
+      "preguntaUsuario": "¿Contiene alguno de los 14 alérgenos?",
+      "explicacion": "Si no marcas ninguno, entendemos que no contiene alérgenos de declaración obligatoria.",
+      "baseLegal": "Art. 9.1.c, Anexo II"
+    },
+    {
+      "id": "cantidad_neta",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Cantidad neta",
+      "etiquetaLegal": "Cantidad neta del alimento",
+      "preguntaUsuario": "¿Qué cantidad o peso neto tiene el envase?",
+      "explicacion": "El contenido del envase, en peso o volumen. Por ejemplo: 250 g, 1 L, 6 unidades.",
+      "baseLegal": "Art. 9.1.e y 23, Anexo IX"
+    },
+    {
+      "id": "fecha_duracion",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Caducidad / consumo preferente",
+      "etiquetaLegal": "Fecha de duración mínima o de caducidad",
+      "preguntaUsuario": "¿Hasta cuándo dura el producto?",
+      "explicacion": "«Consumir preferentemente antes de…» para la mayoría, o «Fecha de caducidad» si es perecedero (microbiológicamente).",
+      "baseLegal": "Art. 9.1.f y 24, Anexo X"
+    },
+    {
+      "id": "lote",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Lote",
+      "etiquetaLegal": "Indicación del lote",
+      "preguntaUsuario": "¿Cómo identificas el lote de fabricación?",
+      "explicacion": "Un código que permite rastrear la partida (p. ej. L2026-014). Puede empezar por «L».",
+      "baseLegal": "RD 2207/1995"
+    },
+    {
+      "id": "responsable",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": true,
+      "campo": "fabricante",
+      "etiquetaCorta": "Empresa responsable",
+      "etiquetaLegal": "Nombre y dirección del operador responsable",
+      "preguntaUsuario": "¿Qué empresa figura como responsable?",
+      "explicacion": "La empresa que aparece en el producto como fabricante o quien lo comercializa en la UE.",
+      "baseLegal": "Art. 9.1.h y 8"
+    },
+    {
+      "id": "info_nutricional",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "campo": "infoNutricional",
+      "etiquetaCorta": "Información nutricional",
+      "etiquetaLegal": "Declaración nutricional (por 100 g/ml)",
+      "preguntaUsuario": "¿Tienes los valores nutricionales por 100 g/ml?",
+      "explicacion": "Energía, grasas, saturadas, hidratos, azúcares, proteínas y sal. Suele venir del análisis de laboratorio.",
+      "baseLegal": "Art. 9.1.l, 30-35, Anexos XIII-XV"
+    },
+    {
+      "id": "conservacion",
+      "tipo": "dato",
+      "obligatoria": false,
+      "autodeducible": true,
+      "campo": "condicionesConservacion",
+      "etiquetaCorta": "Conservación",
+      "etiquetaLegal": "Condiciones especiales de conservación y/o utilización",
+      "preguntaUsuario": "¿Necesita condiciones especiales de conservación?",
+      "explicacion": "Obligatorio solo si el producto lo requiere (p. ej. «conservar refrigerado una vez abierto»).",
+      "baseLegal": "Art. 9.1.g y 25"
+    }
+  ],
+  "mencionesEspeciales": [
+    {
+      "id": "fecha_congelacion",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Fecha de congelación",
+      "etiquetaLegal": "Fecha de congelación",
+      "preguntaUsuario": "¿En qué fecha se congeló el producto?",
+      "explicacion": "Obligatoria en carnes, preparados cárnicos y productos de la pesca congelados sin transformar.",
+      "baseLegal": "Anexo III"
+    },
+    {
+      "id": "num_matadero",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Nº de matadero / despiece",
+      "etiquetaLegal": "Número de matadero y sala de despiece",
+      "preguntaUsuario": "¿Cuál es el número de matadero y sala de despiece?",
+      "explicacion": "Trazabilidad de la carne fresca hasta su origen. Lo facilita tu proveedor o tu registro sanitario.",
+      "baseLegal": "Reg. 1760/2000; Reg. 853/2004"
+    },
+    {
+      "id": "pais_origen_carne",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Origen de la carne",
+      "etiquetaLegal": "País de cría y sacrificio",
+      "preguntaUsuario": "¿Dónde se crió y se sacrificó el animal?",
+      "explicacion": "Para carne fresca de vacuno, porcino, ovino, caprino y aves hay que indicar país de cría y de sacrificio.",
+      "baseLegal": "Reg. 1337/2013"
+    },
+    {
+      "id": "pais_origen_pescado",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Origen / zona de captura",
+      "etiquetaLegal": "Zona de captura o cría",
+      "preguntaUsuario": "¿De qué zona procede el pescado?",
+      "explicacion": "Zona FAO de captura o país de cría (acuicultura), más el método de producción.",
+      "baseLegal": "Reg. 1379/2013"
+    },
+    {
+      "id": "grado_alcoholico",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Grado alcohólico",
+      "etiquetaLegal": "Grado alcohólico volumétrico adquirido",
+      "preguntaUsuario": "¿Qué graduación alcohólica tiene? (% vol.)",
+      "explicacion": "Obligatorio en bebidas con más de 1,2 % vol. de alcohol. Por ejemplo: 13,5 % vol.",
+      "baseLegal": "Art. 9.1.k y 28"
+    },
+    {
+      "id": "con_edulcorantes",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Aviso de edulcorantes",
+      "etiquetaLegal": "Mención «con edulcorante(s)»",
+      "preguntaUsuario": "¿El producto lleva edulcorantes?",
+      "explicacion": "Si lleva edulcorantes hay que añadir «con edulcorante(s)» junto a la denominación. Si lleva polialcoholes, también un aviso de efecto laxante.",
+      "baseLegal": "Anexo III"
+    },
+    {
+      "id": "aviso_cafeina",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Aviso de cafeína",
+      "etiquetaLegal": "Advertencia por alto contenido en cafeína",
+      "preguntaUsuario": "¿Supera los 150 mg/L de cafeína?",
+      "explicacion": "Si supera ese umbral, debe llevar «Alto contenido en cafeína. No recomendado para niños ni mujeres embarazadas o en período de lactancia».",
+      "baseLegal": "Anexo III"
+    },
+    {
+      "id": "halal_certificado",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Certificado Halal",
+      "etiquetaLegal": "Logo de certificadora y nº de certificado Halal",
+      "preguntaUsuario": "¿Qué entidad certifica el Halal y con qué número?",
+      "explicacion": "Por ejemplo: Instituto Halal. El número permite rastrear hasta el sacrificio ritual.",
+      "baseLegal": "Reg. (CE) 1099/2009; UNE 142500"
+    },
+    {
+      "id": "halal_sin_porcino",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": true,
+      "etiquetaCorta": "Sin porcino ni alcohol",
+      "etiquetaLegal": "Ausencia de porcino, alcohol y gelatina porcina",
+      "preguntaUsuario": "Confirma que no contiene porcino, alcohol ni gelatina porcina",
+      "explicacion": "Requisito para el etiquetado Halal.",
+      "baseLegal": "Instituto Halal"
+    },
+    {
+      "id": "kosher_categoria",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Categoría Kosher",
+      "etiquetaLegal": "Sello rabínico y categoría (cárnico/lácteo/pareve)",
+      "preguntaUsuario": "¿Qué categoría Kosher y qué sello rabínico tiene?",
+      "explicacion": "Cárnico, lácteo o pareve (neutro), con supervisión rabínica (p. ej. OU, KLBD).",
+      "baseLegal": "Supervisión rabínica"
+    },
+    {
+      "id": "eco_eurohoja",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Logo eurohoja",
+      "etiquetaLegal": "Logotipo ecológico de la UE (eurohoja)",
+      "preguntaUsuario": "Confirma que llevará el logo ecológico de la UE (eurohoja)",
+      "explicacion": "Obligatorio en ecológico envasado, con ≥95 % de ingredientes ecológicos.",
+      "baseLegal": "Reg. (UE) 2018/848"
+    },
+    {
+      "id": "eco_codigo",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Código de control eco",
+      "etiquetaLegal": "Código del organismo de control (ES-ECO-XXX-YY)",
+      "preguntaUsuario": "¿Cuál es tu código de organismo de control ecológico?",
+      "explicacion": "Tiene el formato ES-ECO-XXX-YY. Lo asigna tu organismo certificador (CAAE, CCPAE, etc.).",
+      "baseLegal": "Reg. (UE) 2018/848"
+    },
+    {
+      "id": "vegano_sello",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Sello vegano",
+      "etiquetaLegal": "Logotipo vegano y ausencia de trazas animales",
+      "preguntaUsuario": "¿Qué sello vegano usarás (p. ej. V-Label)?",
+      "explicacion": "Si la certificación es vegana estricta, sin trazas de origen animal.",
+      "baseLegal": "V-Label / Vegan Society"
+    },
+    {
+      "id": "sin_gluten_umbral",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Umbral sin gluten",
+      "etiquetaLegal": "Contenido de gluten < 20 mg/kg (20 ppm)",
+      "preguntaUsuario": "Confirma que el producto está por debajo de 20 ppm de gluten",
+      "explicacion": "Es el límite legal para poder declarar «sin gluten». Requiere control analítico.",
+      "baseLegal": "Reg. (UE) 828/2014"
+    },
+    {
+      "id": "sin_lactosa_mencion",
+      "tipo": "dato",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Lactosa residual",
+      "etiquetaLegal": "Contenido de lactosa residual declarado",
+      "preguntaUsuario": "¿Qué contenido de lactosa residual tiene?",
+      "explicacion": "Por ejemplo «< 0,01 g de lactosa por 100 g». Requiere control analítico.",
+      "baseLegal": "Criterio nacional"
+    },
+    {
+      "id": "dop_logo",
+      "tipo": "declaracion",
+      "obligatoria": true,
+      "autodeducible": false,
+      "etiquetaCorta": "Logo y denominación DOP/IGP",
+      "etiquetaLegal": "Logotipo UE de DOP/IGP/ETG y denominación protegida",
+      "preguntaUsuario": "¿Qué denominación protegida (DOP/IGP/ETG) ampara el producto?",
+      "explicacion": "P. ej. «Queso Manchego DOP». La denominación protegida prevalece sobre otras menciones.",
+      "baseLegal": "Reg. (UE) 1151/2012"
+    }
+  ],
+  "sectores": [
+    {
+      "id": "carnico",
+      "numero": 1,
+      "nombre": "Cárnico y derivados",
+      "grupo": "general",
+      "subcategorias": [
+        "Carnes frescas envasadas",
+        "Carnes congeladas",
+        "Embutidos curados",
+        "Jamones y paletas",
+        "Embutidos cocidos",
+        "Patés y foies",
+        "Preparados cárnicos",
+        "Conservas cárnicas"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1337/2013", "Reg. 853/2004"],
+      "mencionesExtra": ["num_matadero", "pais_origen_carne"]
+    },
+    {
+      "id": "pesca",
+      "numero": 2,
+      "nombre": "Pesca, acuicultura y derivados",
+      "grupo": "general",
+      "subcategorias": [
+        "Pescado fresco envasado",
+        "Pescado congelado",
+        "Conservas de pescado",
+        "Ahumados",
+        "Salazones",
+        "Surimi y derivados",
+        "Mariscos cocidos"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1379/2013"],
+      "mencionesExtra": ["pais_origen_pescado", "fecha_congelacion"]
+    },
+    {
+      "id": "lacteo",
+      "numero": 3,
+      "nombre": "Lácteo",
+      "grupo": "general",
+      "subcategorias": [
+        "Leches líquidas",
+        "Yogures y leches fermentadas",
+        "Quesos",
+        "Nata y mantequilla",
+        "Postres lácteos",
+        "Helados lácteos"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": []
+    },
+    {
+      "id": "panaderia",
+      "numero": 4,
+      "nombre": "Panadería, bollería y pastelería",
+      "grupo": "general",
+      "subcategorias": [
+        "Panes envasados",
+        "Bollería industrial",
+        "Pastelería envasada",
+        "Galletas",
+        "Masas y bases",
+        "Productos navideños"
+      ],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": []
+    },
+    {
+      "id": "frutas_hortalizas",
+      "numero": 5,
+      "nombre": "Frutas, hortalizas y derivados",
+      "grupo": "general",
+      "subcategorias": ["IV gama", "V gama", "Conservas vegetales", "Mermeladas y confituras"],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": []
+    },
+    {
+      "id": "bebidas_no_alcoholicas",
+      "numero": 6,
+      "nombre": "Bebidas no alcohólicas",
+      "grupo": "general",
+      "subcategorias": ["Aguas", "Refrescos", "Zumos y néctares", "Bebidas energéticas", "Isotónicas"],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": ["aviso_cafeina"]
+    },
+    {
+      "id": "bebidas_alcoholicas",
+      "numero": 7,
+      "nombre": "Bebidas alcohólicas",
+      "grupo": "general",
+      "subcategorias": ["Vinos", "Cervezas", "Destilados", "Licores", "Vermut"],
+      "normativaBase": ["Reg. (UE) 1169/2011", "Reg. 1308/2013"],
+      "mencionesExtra": ["grado_alcoholico"]
+    },
+    {
+      "id": "aceites_grasas",
+      "numero": 8,
+      "nombre": "Aceites y grasas",
+      "grupo": "general",
+      "subcategorias": ["Aceite de oliva", "Aceites de semillas", "Margarinas"],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": []
+    },
+    {
+      "id": "platos_preparados",
+      "numero": 10,
+      "nombre": "Platos preparados y precocinados",
+      "grupo": "general",
+      "subcategorias": ["Refrigerados", "Congelados", "Conservas", "Sopas y cremas"],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": []
+    },
+    {
+      "id": "confiteria",
+      "numero": 12,
+      "nombre": "Confitería, chocolate y derivados",
+      "grupo": "general",
+      "subcategorias": ["Chocolates", "Caramelos y gominolas", "Turrones", "Chicles"],
+      "normativaBase": ["Reg. (UE) 1169/2011"],
+      "mencionesExtra": ["con_edulcorantes"]
+    }
+  ],
+  "certificaciones": [
+    {
+      "id": "halal",
+      "nombre": "Halal",
+      "normativa": ["Reg. (CE) 1099/2009", "UNE 142500"],
+      "sello": "Instituto Halal / JAKIM / GCC",
+      "mencionesExtra": ["halal_certificado", "halal_sin_porcino"]
+    },
+    {
+      "id": "kosher",
+      "nombre": "Kosher",
+      "normativa": ["Supervisión rabínica"],
+      "sello": "OU, KLBD, FCJE",
+      "mencionesExtra": ["kosher_categoria"]
+    },
+    {
+      "id": "eco",
+      "nombre": "Ecológico / BIO",
+      "normativa": ["Reg. (UE) 2018/848"],
+      "sello": "Eurohoja + organismo de control",
+      "mencionesExtra": ["eco_eurohoja", "eco_codigo"]
+    },
+    {
+      "id": "vegano",
+      "nombre": "Vegano / Vegetariano",
+      "normativa": ["Acto delegado pendiente (art. 36.3.b)"],
+      "sello": "V-Label, Vegan Society",
+      "mencionesExtra": ["vegano_sello"]
+    },
+    {
+      "id": "sin_gluten",
+      "nombre": "Sin gluten / celíacos",
+      "normativa": ["Reg. (UE) 828/2014"],
+      "sello": "Espiga barrada (FACE)",
+      "mencionesExtra": ["sin_gluten_umbral"]
+    },
+    {
+      "id": "sin_lactosa",
+      "nombre": "Sin lactosa",
+      "normativa": ["Criterio nacional"],
+      "sello": "—",
+      "mencionesExtra": ["sin_lactosa_mencion"]
+    },
+    {
+      "id": "dop_igp",
+      "nombre": "DOP / IGP / ETG",
+      "normativa": ["Reg. (UE) 1151/2012"],
+      "sello": "Logo UE DOP/IGP/ETG",
+      "mencionesExtra": ["dop_logo"]
+    }
+  ]
+}

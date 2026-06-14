@@ -1,4 +1,5 @@
 import type { FichaTecnica } from "@/lib/ficha";
+import { getSector, getCertificacion, mencionPorId } from "@/lib/matriz";
 
 function Dash() {
   return <span className="text-zinc-300 dark:text-zinc-600">—</span>;
@@ -34,6 +35,14 @@ export default function FichaPreview({ ficha }: { ficha: FichaTecnica }) {
     .map((i) => (i.porcentaje ? `${i.nombre} (${i.porcentaje}%)` : i.nombre))
     .join(", ");
 
+  const sector = getSector(ficha.sectorId);
+  const certs = ficha.certificaciones
+    .map(getCertificacion)
+    .filter((c): c is NonNullable<typeof c> => Boolean(c));
+  const extrasEntries = Object.entries(ficha.extras).filter(([, v]) =>
+    v?.trim(),
+  );
+
   return (
     <div className="rounded-xl border border-zinc-200 bg-white p-6 text-zinc-900 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
       <header className="mb-5 flex items-start justify-between gap-4 border-b border-zinc-200 pb-4 dark:border-zinc-800">
@@ -54,6 +63,25 @@ export default function FichaPreview({ ficha }: { ficha: FichaTecnica }) {
       </header>
 
       <div className="space-y-5">
+        {sector || certs.length || extrasEntries.length ? (
+          <Block title="Clasificación y cumplimiento">
+            <Row label="Tipo de producto" value={sector?.nombre ?? ""} />
+            <Row
+              label="Normativa"
+              value={sector ? sector.normativaBase.join(" · ") : ""}
+            />
+            {certs.length ? (
+              <Row
+                label="Certificaciones"
+                value={certs.map((c) => c.nombre).join(", ")}
+              />
+            ) : null}
+            {extrasEntries.map(([id, v]) => (
+              <Row key={id} label={mencionPorId(id)?.etiquetaCorta ?? id} value={v} />
+            ))}
+          </Block>
+        ) : null}
+
         <Block title="Composición">
           <Row label="Ingredientes" value={ingredientesTexto} />
         </Block>

@@ -57,6 +57,14 @@ export type ArchivoAdjunto = {
 };
 
 export type FichaTecnica = {
+  // Clasificación (matriz de etiquetado)
+  /** Sector del producto (ver src/data/matriz.json). */
+  sectorId: string;
+  /** Certificaciones aplicables (Halal, Eco, Sin gluten…). */
+  certificaciones: string[];
+  /** Valores de menciones obligatorias sin campo propio (clave = id de mención). */
+  extras: Record<string, string>;
+
   // Identificación
   nombreProducto: string;
   ean: string;
@@ -91,6 +99,9 @@ export type FichaTecnica = {
 
 export function crearFichaVacia(): FichaTecnica {
   return {
+    sectorId: "",
+    certificaciones: [],
+    extras: {},
     nombreProducto: "",
     ean: "",
     fotoProducto: null,
@@ -126,6 +137,13 @@ export function crearFichaVacia(): FichaTecnica {
 /** Datos de ejemplo para precargar el demo. */
 export function crearFichaDemo(): FichaTecnica {
   return {
+    sectorId: "frutas_hortalizas",
+    certificaciones: [],
+    extras: {
+      cantidad_neta: "250 g",
+      fecha_duracion: "Consumir preferentemente antes de: ver tapa",
+      lote: "L2026-014",
+    },
     nombreProducto: "Mermelada artesanal de fresa",
     ean: "8412345678905",
     fotoProducto: null,

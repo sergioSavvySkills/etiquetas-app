@@ -8,6 +8,18 @@ import {
   type FichaTecnica,
   type Ingrediente,
 } from "@/lib/ficha";
+import {
+  SECTORES,
+  CERTIFICACIONES,
+  getSector,
+  getRequisitos,
+  sugerirSector,
+  mencionSatisfecha,
+  esCampoComplejo,
+  aplicarValorMencion,
+  valorMencion,
+  type Mencion,
+} from "@/lib/matriz";
 import type { DescribeResult } from "@/lib/ai";
 import { Field, Input, TextArea } from "@/components/ui";
 import FichaPreview from "@/components/FichaPreview";
@@ -17,6 +29,7 @@ import AiAssist from "@/components/wizard/AiAssist";
 
 type StepId =
   | "describe"
+  | "tipo"
   | "nombre"
   | "ean"
   | "ingredientes"
@@ -25,10 +38,12 @@ type StepId =
   | "calidad"
   | "conservacion"
   | "legal"
+  | "verificacion"
   | "resumen";
 
 const STEPS: { id: StepId; question: string; help?: string }[] = [
   { id: "describe", question: "Cuéntanos sobre tu producto", help: "Descríbelo con tus palabras. La IA extraerá los datos y tú solo confirmas." },
+  { id: "tipo", question: "¿Qué tipo de producto es?", help: "Lo usamos para saber qué exige la normativa. Si no lo sabes, te lo proponemos nosotros." },
   { id: "nombre", question: "¿Cómo se llama el producto?", help: "El nombre comercial tal como aparecerá en la ficha." },
   { id: "ean", question: "¿Cuál es su código EAN?", help: "Código de barras de 8 o 13 dígitos. Puedes dejarlo vacío por ahora." },
   { id: "ingredientes", question: "¿Qué ingredientes lleva?", help: "En orden decreciente de peso, con su porcentaje." },
@@ -37,6 +52,7 @@ const STEPS: { id: StepId; question: string; help?: string }[] = [
   { id: "calidad", question: "Análisis y calidad", help: "Vida útil y análisis del producto." },
   { id: "conservacion", question: "Conservación y uso", help: "Cómo se guarda y cómo se consume." },
   { id: "legal", question: "Información legal", help: "Responsable y registro sanitario." },
+  { id: "verificacion", question: "Verificación de cumplimiento", help: "Comprobamos por ti que no falta ninguna mención obligatoria." },
   { id: "resumen", question: "Revisa tu ficha técnica", help: "Esto es lo que generamos con tus respuestas." },
 ];
 
@@ -103,6 +119,19 @@ export default function Wizard() {
     }} />;
   }
 
+  const requisitos = getRequisitos(ficha.sectorId, ficha.certificaciones);
+  const faltantes = requisitos.filter(
+    (m) => m.obligatoria && !mencionSatisfecha(m, ficha),
+  );
+
+  let puedeAvanzar = true;
+  if (current.id === "nombre") puedeAvanzar = ficha.nombreProducto.trim().length > 0;
+  else if (current.id === "tipo") puedeAvanzar = ficha.sectorId.length > 0;
+  else if (current.id === "verificacion") puedeAvanzar = faltantes.length === 0;
+
+  const goToStepId = (id: StepId) =>
+    setStep(STEPS.findIndex((s) => s.id === id));
+
   return (
     <StepShell
       stepIndex={step}
@@ -113,7 +142,7 @@ export default function Wizard() {
       onNext={step === total - 1 ? () => setFinished(true) : next}
       hideNext={current.id === "describe"}
       nextLabel={step === total - 1 ? "Finalizar ✓" : "Continuar"}
-      canAdvance={current.id !== "nombre" || ficha.nombreProducto.trim().length > 0}
+      canAdvance={puedeAvanzar}
     >
       {current.id === "describe" && (
         <DescribeStep
@@ -125,6 +154,10 @@ export default function Wizard() {
             next();
           }}
         />
+      )}
+
+      {current.id === "tipo" && (
+        <TipoStep descripcion={descripcion} ficha={ficha} setFicha={setFicha} />
       )}
 
       {current.id === "nombre" && (
@@ -297,6 +330,18 @@ export default function Wizard() {
         </div>
       )}
 
+      {current.id === "verificacion" && (
+        <VerificacionStep
+          ficha={ficha}
+          setFicha={setFicha}
+          onIrACampo={(campo) => {
+            if (campo === "ingredientes") goToStepId("ingredientes");
+            else if (campo === "alergenos") goToStepId("alergenos");
+            else if (campo === "infoNutricional") goToStepId("nutricional");
+          }}
+        />
+      )}
+
       {current.id === "resumen" && (
         <div className="max-h-[55vh] overflow-y-auto rounded-xl">
           <FichaPreview ficha={ficha} />
@@ -465,6 +510,259 @@ function FinishScreen({
       >
         Crear otra ficha
       </button>
+    </div>
+  );
+}
+
+const selectClass =
+  "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100";
+
+function TipoStep({
+  descripcion,
+  ficha,
+  setFicha,
+}: {
+  descripcion: string;
+  ficha: FichaTecnica;
+  setFicha: React.Dispatch<React.SetStateAction<FichaTecnica>>;
+}) {
+  const sugerencia = ficha.sectorId ? undefined : sugerirSector(descripcion);
+  const sector = getSector(ficha.sectorId);
+
+  const toggleCert = (id: string) =>
+    setFicha((f) => ({
+      ...f,
+      certificaciones: f.certificaciones.includes(id)
+        ? f.certificaciones.filter((c) => c !== id)
+        : [...f.certificaciones, id],
+    }));
+
+  return (
+    <div className="space-y-5">
+      {sugerencia ? (
+        <div className="rounded-xl border border-violet-200 bg-violet-50/60 p-4 dark:border-violet-900 dark:bg-violet-950/30">
+          <p className="text-sm text-violet-800 dark:text-violet-200">
+            <span aria-hidden>✨ </span>
+            Por tu descripción, creo que es <strong>{sugerencia.nombre}</strong>.
+          </p>
+          <button
+            type="button"
+            onClick={() => setFicha((f) => ({ ...f, sectorId: sugerencia.id }))}
+            className="mt-3 rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+          >
+            Sí, es eso →
+          </button>
+        </div>
+      ) : null}
+
+      <Field label="Tipo de producto">
+        <select
+          value={ficha.sectorId}
+          onChange={(e) => setFicha((f) => ({ ...f, sectorId: e.target.value }))}
+          className={selectClass}
+        >
+          <option value="">Selecciona…</option>
+          {SECTORES.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.nombre}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      {sector ? (
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          Normativa aplicable: {sector.normativaBase.join(" · ")}
+        </p>
+      ) : null}
+
+      <div>
+        <p className="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          ¿Tiene alguna certificación?{" "}
+          <span className="font-normal text-zinc-400">(opcional)</span>
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {CERTIFICACIONES.map((c) => {
+            const activa = ficha.certificaciones.includes(c.id);
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => toggleCert(c.id)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                  activa
+                    ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+                    : "border-zinc-300 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-300"
+                }`}
+              >
+                {c.nombre}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VerificacionStep({
+  ficha,
+  setFicha,
+  onIrACampo,
+}: {
+  ficha: FichaTecnica;
+  setFicha: React.Dispatch<React.SetStateAction<FichaTecnica>>;
+  onIrACampo: (campo: string) => void;
+}) {
+  const requisitos = getRequisitos(ficha.sectorId, ficha.certificaciones);
+  const obligatorias = requisitos.filter((m) => m.obligatoria);
+  const pendientes = obligatorias.filter((m) => !mencionSatisfecha(m, ficha));
+  const completas = obligatorias.filter((m) => mencionSatisfecha(m, ficha));
+  const recomendadas = requisitos.filter(
+    (m) => !m.obligatoria && !mencionSatisfecha(m, ficha),
+  );
+
+  return (
+    <div className="space-y-5">
+      <p className="text-sm text-zinc-600 dark:text-zinc-300">
+        {pendientes.length === 0 ? (
+          <>✅ Tienes toda la información obligatoria. Ya puedes generar la ficha.</>
+        ) : (
+          <>
+            Nos {pendientes.length === 1 ? "falta" : "faltan"}{" "}
+            <strong>
+              {pendientes.length} dato{pendientes.length === 1 ? "" : "s"}
+            </strong>{" "}
+            que la normativa exige para este producto. Lo completamos aquí:
+          </>
+        )}
+      </p>
+
+      <div className="space-y-3">
+        {pendientes.map((m) => (
+          <MencionPendiente
+            key={m.id}
+            mencion={m}
+            ficha={ficha}
+            setFicha={setFicha}
+            onIrACampo={onIrACampo}
+          />
+        ))}
+      </div>
+
+      {recomendadas.length ? (
+        <div className="space-y-3">
+          <p className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+            Recomendado (opcional)
+          </p>
+          {recomendadas.map((m) => (
+            <MencionPendiente
+              key={m.id}
+              mencion={m}
+              ficha={ficha}
+              setFicha={setFicha}
+              onIrACampo={onIrACampo}
+              opcional
+            />
+          ))}
+        </div>
+      ) : null}
+
+      {completas.length ? (
+        <details className="rounded-xl border border-zinc-200 p-3 dark:border-zinc-800">
+          <summary className="cursor-pointer text-sm font-medium text-zinc-600 dark:text-zinc-300">
+            ✅ {completas.length} requisitos ya cubiertos
+          </summary>
+          <ul className="mt-2 space-y-1">
+            {completas.map((m) => (
+              <li key={m.id} className="text-xs text-zinc-500 dark:text-zinc-400">
+                <span className="text-green-600">✓</span> {m.etiquetaCorta}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+    </div>
+  );
+}
+
+function MencionPendiente({
+  mencion,
+  ficha,
+  setFicha,
+  onIrACampo,
+  opcional = false,
+}: {
+  mencion: Mencion;
+  ficha: FichaTecnica;
+  setFicha: React.Dispatch<React.SetStateAction<FichaTecnica>>;
+  onIrACampo: (campo: string) => void;
+  opcional?: boolean;
+}) {
+  const [verPorque, setVerPorque] = useState(false);
+  const complejo = esCampoComplejo(mencion);
+  const borde = opcional
+    ? "border-zinc-200 bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-900/40"
+    : "border-amber-200 bg-amber-50/50 dark:border-amber-900/50 dark:bg-amber-950/20";
+
+  return (
+    <div className={`rounded-xl border p-4 ${borde}`}>
+      <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+        {mencion.preguntaUsuario}
+      </p>
+
+      {complejo ? (
+        <button
+          type="button"
+          onClick={() => mencion.campo && onIrACampo(mencion.campo)}
+          className="mt-2 rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+        >
+          Completar este apartado →
+        </button>
+      ) : mencion.tipo === "declaracion" ? (
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setFicha((f) => aplicarValorMencion(f, mencion, "Lo incluiré"))}
+            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+          >
+            Lo incluiré
+          </button>
+          <button
+            type="button"
+            onClick={() => setFicha((f) => aplicarValorMencion(f, mencion, "No aplica"))}
+            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            No aplica
+          </button>
+        </div>
+      ) : (
+        <div className="mt-2">
+          <Input
+            value={valorMencion(ficha, mencion)}
+            onChange={(e) =>
+              setFicha((f) => aplicarValorMencion(f, mencion, e.target.value))
+            }
+            placeholder="Escribe aquí…"
+          />
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setVerPorque((v) => !v)}
+        className="mt-2 block text-xs text-zinc-500 underline-offset-2 hover:underline dark:text-zinc-400"
+      >
+        {verPorque ? "Ocultar" : "¿Por qué me piden esto?"}
+      </button>
+      {verPorque ? (
+        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          {mencion.explicacion}{" "}
+          <span className="text-zinc-400 dark:text-zinc-500">
+            ({mencion.baseLegal})
+          </span>
+        </p>
+      ) : null}
     </div>
   );
 }
