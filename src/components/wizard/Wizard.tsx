@@ -578,7 +578,7 @@ function TipoStep({
 
       <div>
         <p className="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          ¿Tiene alguna certificación?{" "}
+          ¿Certificaciones o características especiales?{" "}
           <span className="font-normal text-zinc-400">(opcional)</span>
         </p>
         <div className="flex flex-wrap gap-2">
