@@ -10,6 +10,7 @@ import {
   type EstadoRequisito,
   type Requisito,
 } from "@/lib/workspace";
+import { IconDoubleCheck, IconShield } from "@/components/workspace/icons";
 import DocumentoCard, { IconoDocumento } from "@/components/workspace/DocumentoCard";
 import { EstadoChip, EstadoPunto } from "@/components/workspace/EstadoBadge";
 import {
@@ -33,6 +34,10 @@ export function DetalleRequisito({
   onCerrar,
   onEstado,
   onDato,
+  onAprobar,
+  onRechazar,
+  onRetirarAprobacion,
+  usuario,
   onAdjuntar,
   onPreguntar,
   onVerDocumento,
@@ -43,14 +48,22 @@ export function DetalleRequisito({
   onCerrar: () => void;
   onEstado: (estado: EstadoRequisito, nota?: string) => void;
   onDato: (etiqueta: string, valor: string) => void;
+  onAprobar: () => void;
+  onRechazar: (motivo: string) => void;
+  onRetirarAprobacion: () => void;
+  usuario: { nombre: string; rol: string };
   onAdjuntar: (ficheros: File[]) => void;
   onPreguntar: (texto: string) => void;
   onVerDocumento: (id: string) => void;
 }) {
   const [valorManual, setValorManual] = useState("");
+  const [rechazando, setRechazando] = useState(false);
+  const [motivoRechazo, setMotivoRechazo] = useState("");
   const fase = FASES.find((f) => f.id === r.fase);
   const docs = item.documentoIds.map((id) => documentos[id]).filter(Boolean);
   const noAplica = item.estado === "no_aplica";
+  const porConfirmar = item.estado === "verificado";
+  const aprobado = item.estado === "aprobado";
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -87,6 +100,119 @@ export function DetalleRequisito({
       </header>
 
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-4">
+        {porConfirmar ? (
+          <div className="rounded-lg border border-teal-200 bg-teal-50 p-3 dark:border-teal-900/60 dark:bg-teal-950/40">
+            <div className="flex gap-2.5">
+              <IconShield className="mt-0.5 h-4 w-4 shrink-0 text-teal-700 dark:text-teal-300" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-teal-900 dark:text-teal-200">Pendiente de tu aprobación</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-teal-800 dark:text-teal-300">
+                  El asistente da estos datos por correctos, pero no pasan a la etiqueta hasta que una persona los confirme. Revisa los datos y los documentos y decide.
+                </p>
+              </div>
+            </div>
+            {!rechazando ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={onAprobar}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700"
+                >
+                  <IconDoubleCheck className="h-3.5 w-3.5" strokeWidth={3} />
+                  Aprobar como {usuario.nombre.split(" ")[0]}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRechazando(true)}
+                  className="rounded-lg border border-teal-300 px-3 py-1.5 text-xs font-medium text-teal-900 transition hover:bg-white dark:border-teal-800 dark:text-teal-200 dark:hover:bg-teal-950"
+                >
+                  Rechazar
+                </button>
+              </div>
+            ) : (
+              <form
+                className="mt-3 space-y-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!motivoRechazo.trim()) return;
+                  onRechazar(motivoRechazo.trim());
+                  setRechazando(false);
+                  setMotivoRechazo("");
+                }}
+              >
+                <input
+                  autoFocus
+                  value={motivoRechazo}
+                  onChange={(e) => setMotivoRechazo(e.target.value)}
+                  placeholder="¿Qué está mal? (p. ej. el valor de sal no coincide con el informe)"
+                  className="w-full rounded-lg border border-teal-300 bg-white px-3 py-1.5 text-xs text-zinc-900 outline-none focus:border-teal-500 dark:border-teal-800 dark:bg-zinc-950 dark:text-zinc-100"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    disabled={!motivoRechazo.trim()}
+                    className="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-700 disabled:opacity-40"
+                  >
+                    Marcar incidencia
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRechazando(false)}
+                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-white dark:text-zinc-300 dark:hover:bg-zinc-900"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        ) : null}
+        {(aprobado || noAplica) && item.aprobacion ? (
+          <div className="flex items-start justify-between gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-900/60 dark:bg-emerald-950/40">
+            <div className="flex gap-2.5">
+              <IconDoubleCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700 dark:text-emerald-300" strokeWidth={3} />
+              <div>
+                <p className="text-xs font-semibold text-emerald-900 dark:text-emerald-200">
+                  {aprobado ? "Aprobado" : "Descartado"} por {item.aprobacion.por}
+                </p>
+                <p suppressHydrationWarning className="mt-0.5 text-xs text-emerald-800 dark:text-emerald-300">
+                  {fechaCorta(item.aprobacion.fecha)} · {usuario.rol}
+                </p>
+              </div>
+            </div>
+            {aprobado ? (
+              <button
+                type="button"
+                onClick={onRetirarAprobacion}
+                className="shrink-0 text-[11px] font-medium text-emerald-800 underline-offset-2 hover:underline dark:text-emerald-300"
+              >
+                Retirar
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+        {noAplica && !item.aprobacion ? (
+          <div className="rounded-lg border border-teal-200 bg-teal-50 p-3 dark:border-teal-900/60 dark:bg-teal-950/40">
+            <p className="text-xs font-semibold text-teal-900 dark:text-teal-200">El asistente propone que no aplica</p>
+            <p className="mt-0.5 text-xs leading-relaxed text-teal-800 dark:text-teal-300">Confírmalo o vuelve a activarlo.</p>
+            <div className="mt-3 flex gap-2">
+              <button
+                type="button"
+                onClick={() => onEstado("no_aplica", item.nota)}
+                className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700"
+              >
+                Confirmar que no aplica
+              </button>
+              <button
+                type="button"
+                onClick={() => onEstado("pendiente")}
+                className="rounded-lg border border-teal-300 px-3 py-1.5 text-xs font-medium text-teal-900 transition hover:bg-white dark:border-teal-800 dark:text-teal-200"
+              >
+                Sí aplica
+              </button>
+            </div>
+          </div>
+        ) : null}
         {item.estado === "incidencia" && item.nota ? (
           <Aviso tono="amber" icono={<IconAlert className="h-4 w-4" />} titulo="Necesita revisión manual">
             {item.nota}
@@ -181,12 +307,13 @@ export function DetalleRequisito({
         </Bloque>
 
         {!noAplica && r.origen !== "documento" ? (
-          <Bloque titulo={r.origen === "declaracion" ? "Confirmar" : "Introducir el dato a mano"}>
+          <Bloque titulo={r.origen === "declaracion" ? "Confirmar" : aprobado ? "Corregir el dato" : "Introducir el dato a mano"}>
             {r.origen === "declaracion" ? (
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => onDato("Declaración", "Se incluirá en la etiqueta")}
+                  title="Queda aprobado con tu firma"
                   className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
                 >
                   Sí, se incluye
@@ -259,10 +386,10 @@ export function DetalleRequisito({
               ) : (
                 <button
                   type="button"
-                  onClick={() => onEstado("verificado")}
+                  onClick={() => onEstado("aprobado")}
                   className="rounded-lg border border-emerald-600 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950"
                 >
-                  Resuelto
+                  Resuelto y aprobado
                 </button>
               )}
               <button

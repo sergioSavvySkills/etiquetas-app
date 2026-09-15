@@ -20,6 +20,7 @@ import {
   DEMO_ESTADOS,
   DEMO_MENSAJES,
   DEMO_PRODUCTO,
+  DEMO_USUARIO,
 } from "@/lib/demo";
 import TopBar from "@/components/workspace/TopBar";
 import RequisitosPanel from "@/components/workspace/RequisitosPanel";
@@ -110,16 +111,40 @@ export default function Workspace() {
     [],
   );
 
-  const cambiarEstado = (id: string, estado: EstadoRequisito, nota?: string) =>
-    actualizar(id, (it) => ({ ...it, estado, nota }));
+  const firma = () => ({ por: DEMO_USUARIO.nombre, fecha: ahora() });
 
-  const guardarDato = (id: string, etiqueta: string, valor: string) =>
+  /** Cambio de estado hecho por la persona. «no_aplica» lleva su firma; el resto la pierde. */
+  const cambiarEstado = (id: string, estado: EstadoRequisito, nota?: string) =>
     actualizar(id, (it) => ({
       ...it,
-      estado: "verificado",
+      estado,
+      nota,
+      aprobacion: estado === "no_aplica" || estado === "aprobado" ? firma() : undefined,
+    }));
+
+  /** Dato introducido a mano por la persona: queda aprobado directamente, con su firma. */
+  const guardarDato = (id: string, etiqueta: string, valor: string, porAsistente = false) =>
+    actualizar(id, (it) => ({
+      ...it,
+      estado: porAsistente ? "verificado" : "aprobado",
+      aprobacion: porAsistente ? undefined : firma(),
       nota: undefined,
       datos: [...it.datos.filter((d) => d.etiqueta !== etiqueta), { etiqueta, valor }],
     }));
+
+  const aprobar = (id: string) =>
+    actualizar(id, (it) => ({ ...it, estado: "aprobado", nota: undefined, aprobacion: firma() }));
+
+  const rechazar = (id: string, motivo: string) =>
+    actualizar(id, (it) => ({
+      ...it,
+      estado: "incidencia",
+      aprobacion: undefined,
+      nota: `Rechazado por ${DEMO_USUARIO.nombre}: ${motivo}`,
+    }));
+
+  const retirarAprobacion = (id: string) =>
+    actualizar(id, (it) => ({ ...it, estado: "verificado", aprobacion: undefined }));
 
   /* ---------------- chat ---------------- */
 
@@ -175,15 +200,15 @@ export default function Workspace() {
     const lote = sinRgseaa.match(/\bL\s?-?\d{2,}[\w-]*/i);
     const ean = sinRgseaa.match(/\b\d{13}\b/);
     if (rgseaa && requisitos.some((r) => r.id === "registro_sanitario")) {
-      guardarDato("registro_sanitario", "Nº RGSEAA", rgseaa[0].toUpperCase());
+      guardarDato("registro_sanitario", "Nº RGSEAA", rgseaa[0].toUpperCase(), true);
       afectados.push("registro_sanitario");
     }
     if (lote && requisitos.some((r) => r.id === "lote")) {
-      guardarDato("lote", "Lote", lote[0].toUpperCase().replace(/\s/g, ""));
+      guardarDato("lote", "Lote", lote[0].toUpperCase().replace(/\s/g, ""), true);
       afectados.push("lote");
     }
     if (ean && requisitos.some((r) => r.id === "ean")) {
-      guardarDato("ean", "EAN-13", ean[0]);
+      guardarDato("ean", "EAN-13", ean[0], true);
       afectados.push("ean");
     }
 
@@ -219,7 +244,7 @@ export default function Workspace() {
         );
         return {
           autor: "asistente",
-          texto: `Anotado: ${nombres.join(" y ")} ${nombres.length === 1 ? "queda" : "quedan"} verificado${nombres.length === 1 ? "" : "s"}.${
+          texto: `Anotado: ${nombres.join(" y ")} ${nombres.length === 1 ? "queda" : "quedan"} por confirmar; apruébalo desde su ficha.${
             pendientes.length
               ? ` Aún faltan ${pendientes.length} ${pendientes.length === 1 ? "obligatorio" : "obligatorios"}: ${pendientes
                   .slice(0, 3)
@@ -263,7 +288,7 @@ export default function Workspace() {
       }));
       añadirMensaje({
         autor: "asistente",
-        texto: `Listo: «${doc.nombre}» cubre ${req.titulo}. Lo he marcado como verificado (análisis simulado en esta versión).`,
+        texto: `Listo: «${doc.nombre}» cubre ${req.titulo}. Queda por confirmar: revisa los datos en su ficha y apruébalo (análisis simulado en esta versión).`,
         requisitosRef: [req.id],
       });
     }, 1600);
@@ -309,6 +334,10 @@ export default function Workspace() {
         onCerrar={cerrarLateral}
         onEstado={(e, nota) => cambiarEstado(requisitoActivo.id, e, nota)}
         onDato={(et, v) => guardarDato(requisitoActivo.id, et, v)}
+        onAprobar={() => aprobar(requisitoActivo.id)}
+        onRechazar={(motivo) => rechazar(requisitoActivo.id, motivo)}
+        onRetirarAprobacion={() => retirarAprobacion(requisitoActivo.id)}
+        usuario={DEMO_USUARIO}
         onAdjuntar={(f) => adjuntarARequisito(requisitoActivo.id, f)}
         onPreguntar={preguntar}
         onVerDocumento={verDocumento}
@@ -328,6 +357,7 @@ export default function Workspace() {
         estados={estados}
         resumen={resumen}
         onVerRequisito={verRequisito}
+        onAprobar={aprobar}
       />
     );
 
@@ -339,6 +369,7 @@ export default function Workspace() {
         sectorId={sectorId}
         certificaciones={certificaciones}
         resumen={resumen}
+        usuario={DEMO_USUARIO}
         onSector={setSectorId}
         onToggleCert={toggleCert}
         onVerEtiqueta={verEtiqueta}

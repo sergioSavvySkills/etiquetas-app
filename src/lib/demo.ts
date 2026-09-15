@@ -9,6 +9,11 @@ import type { Atributos, Documento, EstadoItem, Mensaje } from "@/lib/workspace"
 const enHora = (h: number, m: number) =>
   `2026-09-15T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00`;
 
+/** Persona que revisa y aprueba (en la app real será el usuario autenticado). */
+export const DEMO_USUARIO = { nombre: "Laura Gómez", rol: "Consultora", iniciales: "LG" };
+
+const aprobadoPor = (h: number, m: number) => ({ por: DEMO_USUARIO.nombre, fecha: enHora(h, m) });
+
 export const DEMO_PRODUCTO = {
   nombre: "Mermelada artesanal de fresa",
   cliente: "Conservas del Sur, S.L.",
@@ -114,7 +119,7 @@ export const DEMO_DOCUMENTOS: Documento[] = [
 
 export const DEMO_ESTADOS: Record<string, EstadoItem> = {
   denominacion: {
-    estado: "verificado",
+    estado: "aprobado", aprobacion: aprobadoPor(9, 50),
     documentoIds: [],
     datos: [
       { etiqueta: "Nombre comercial", valor: "Mermelada artesanal de fresa" },
@@ -123,20 +128,20 @@ export const DEMO_ESTADOS: Record<string, EstadoItem> = {
   },
   foto_producto: { estado: "pendiente", documentoIds: [], datos: [] },
   ean: {
-    estado: "verificado",
+    estado: "aprobado", aprobacion: aprobadoPor(9, 50),
     documentoIds: [],
     datos: [{ etiqueta: "EAN-13", valor: "8412345678905" }],
   },
   lista_ingredientes: {
-    estado: "verificado",
+    estado: "aprobado", aprobacion: aprobadoPor(9, 55),
     documentoIds: ["doc_ft"],
     datos: [
       { etiqueta: "Ingredientes", valor: "Fresa (55 %), azúcar, gelificante (pectina), acidulante (ácido cítrico)" },
     ],
   },
-  ft_proveedor: { estado: "verificado", documentoIds: ["doc_ft"], datos: [] },
+  ft_proveedor: { estado: "aprobado", aprobacion: aprobadoPor(9, 55), documentoIds: ["doc_ft"], datos: [] },
   cantidad_neta: {
-    estado: "verificado",
+    estado: "aprobado", aprobacion: aprobadoPor(9, 55),
     documentoIds: ["doc_ft"],
     datos: [{ etiqueta: "Cantidad neta", valor: "250 g" }],
   },
@@ -187,7 +192,7 @@ export const DEMO_ESTADOS: Record<string, EstadoItem> = {
     nota: "El PDF es un escaneado sin texto y no se puede leer. Pide al laboratorio el original o introduce los parámetros a mano.",
   },
   alergenos: {
-    estado: "verificado",
+    estado: "aprobado", aprobacion: aprobadoPor(9, 58),
     documentoIds: ["doc_ft"],
     datos: [
       { etiqueta: "Contiene", valor: "Ninguno de los 14 alérgenos" },
@@ -209,7 +214,7 @@ export const DEMO_ESTADOS: Record<string, EstadoItem> = {
   transporte: { estado: "pendiente", documentoIds: [], datos: [] },
   modo_empleo: { estado: "pendiente", documentoIds: [], datos: [] },
   responsable: {
-    estado: "verificado",
+    estado: "aprobado", aprobacion: aprobadoPor(9, 58),
     documentoIds: ["doc_ft"],
     datos: [
       { etiqueta: "Responsable", valor: "Conservas del Sur, S.L." },
@@ -218,7 +223,7 @@ export const DEMO_ESTADOS: Record<string, EstadoItem> = {
   },
   registro_sanitario: { estado: "pendiente", documentoIds: [], datos: [] },
   categoria_comercial: {
-    estado: "no_aplica",
+    estado: "no_aplica", aprobacion: aprobadoPor(10, 2),
     documentoIds: [],
     datos: [],
     nota: "Solo para frutas y hortalizas frescas. No procede en confituras.",
@@ -244,13 +249,13 @@ export const DEMO_ESTADOS: Record<string, EstadoItem> = {
     nota: "Sin sulfitos según la ficha técnica.",
   },
   zumo_denominacion: {
-    estado: "no_aplica",
+    estado: "no_aplica", aprobacion: aprobadoPor(10, 2),
     documentoIds: [],
     datos: [],
     nota: "No es un zumo.",
   },
   ultracongelado: {
-    estado: "no_aplica",
+    estado: "no_aplica", aprobacion: aprobadoPor(10, 2),
     documentoIds: [],
     datos: [],
     nota: "Producto a temperatura ambiente.",
@@ -294,7 +299,7 @@ export const DEMO_MENSAJES: Mensaje[] = [
     autor: "asistente",
     hora: enHora(10, 16),
     texto:
-      "Estudio de vida útil leído: 24 meses a temperatura ambiente. Propongo «Consumir preferentemente antes del fin de: ver tapa» y estoy redactando las condiciones de conservación.\n\nEl análisis microbiológico es un escaneado sin texto y no puedo leerlo. Lo he marcado con incidencia para revisión manual; si tienes el PDF original del laboratorio, adjúntalo y lo vuelvo a intentar.\n\nMe faltan: lote, registro sanitario, los informes de contaminantes y de residuos de plaguicidas, la foto del producto y la justificación de «artesano». ¿Empezamos por el registro sanitario (RGSEAA)?",
+      "Estudio de vida útil leído: 24 meses a temperatura ambiente. Propongo «Consumir preferentemente antes del fin de: ver tapa» y estoy redactando las condiciones de conservación.\n\nEl análisis microbiológico es un escaneado sin texto y no puedo leerlo. Lo he marcado con incidencia para revisión manual; si tienes el PDF original del laboratorio, adjúntalo y lo vuelvo a intentar.\n\nMe faltan: lote, registro sanitario, los informes de contaminantes y de residuos de plaguicidas, la foto del producto y la justificación de «artesano». Además tienes 6 requisitos verificados pendientes de tu aprobación: nada pasa a la etiqueta hasta que los confirmes. ¿Empezamos por el registro sanitario (RGSEAA)?",
     requisitosRef: ["lab_vida_util", "fecha_duracion", "lab_microbiologico", "lab_contaminantes", "lab_plaguicidas", "lote", "registro_sanitario"],
   },
 ];

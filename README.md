@@ -23,6 +23,15 @@ partir de su documentación (ruta `/`):
   informe según el sector, las certificaciones y el **perfil del producto**
   (conservación, listo para consumo, alcohol, claims, líquido de cobertura,
   ingrediente único). Los que no aplican se muestran con su motivo.
+
+  **Aprobación humana.** Lo que el asistente extrae o verifica queda «Por
+  confirmar»; solo pasa a «Aprobado» cuando un consultor lo confirma desde la
+  ficha del requisito (o desde la cola de la vista previa), y la aprobación
+  queda firmada con su nombre y hora. Un requisito por confirmar se puede
+  rechazar con un motivo (pasa a incidencia). Los datos que la persona
+  introduce a mano quedan aprobados directamente. La etiqueta solo se puede
+  generar cuando todos los obligatorios están aprobados o descartados por una
+  persona.
 - **Panel central — Chat.** Conversación con el asistente donde se escriben
   datos y se adjuntan documentos (arrastrar y soltar). El asistente vincula
   cada documento con los requisitos que cubre.

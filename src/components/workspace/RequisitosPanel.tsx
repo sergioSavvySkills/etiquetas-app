@@ -14,7 +14,7 @@ import { EstadoIcono } from "@/components/workspace/EstadoBadge";
 import PerfilProducto from "@/components/workspace/PerfilProducto";
 import { IconBan, IconChevron, IconFile, IconSearch } from "@/components/workspace/icons";
 
-type Filtro = "todos" | "pendientes" | "incidencias";
+type Filtro = "todos" | "pendientes" | "por_confirmar" | "incidencias";
 
 export default function RequisitosPanel({
   requisitos,
@@ -46,6 +46,7 @@ export default function RequisitosPanel({
     return requisitos.filter((r) => {
       const e = estados[r.id]?.estado ?? "pendiente";
       if (filtro === "pendientes" && !["pendiente", "recibido", "analizando"].includes(e)) return false;
+      if (filtro === "por_confirmar" && e !== "verificado" && !(e === "no_aplica" && !estados[r.id]?.aprobacion)) return false;
       if (filtro === "incidencias" && e !== "incidencia") return false;
       if (q && !`${r.titulo} ${r.descripcion} ${r.baseLegal ?? ""}`.toLowerCase().includes(q)) return false;
       return true;
@@ -82,7 +83,7 @@ export default function RequisitosPanel({
           />
         </div>
         <p className="mt-1.5 text-[11px] text-zinc-500">
-          {resumen.obligatoriosCubiertos} de {resumen.obligatorios} obligatorios cubiertos
+          {resumen.obligatoriosCubiertos} de {resumen.obligatorios} obligatorios aprobados
           {resumen.incidencias > 0 ? (
             <>
               {" · "}
@@ -93,25 +94,41 @@ export default function RequisitosPanel({
           ) : null}
         </p>
 
-        <div className="mt-3 flex gap-1">
+        <div className="mt-3 flex flex-wrap gap-1">
           {(
             [
-              ["todos", "Todos"],
-              ["pendientes", `Pendientes · ${resumen.pendientes}`],
-              ["incidencias", `Incidencias · ${resumen.incidencias}`],
-            ] as [Filtro, string][]
-          ).map(([id, nombre]) => (
+              ["todos", "Todos", null],
+              ["pendientes", "Pendientes", resumen.pendientes],
+              ["por_confirmar", "Por confirmar", resumen.porConfirmar],
+              ["incidencias", "Incidencias", resumen.incidencias],
+            ] as [Filtro, string, number | null][]
+          ).map(([id, nombre, n]) => (
             <button
               key={id}
               type="button"
               onClick={() => setFiltro(id)}
-              className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition ${
+              className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-medium transition ${
                 filtro === id
                   ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
                   : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
               }`}
             >
               {nombre}
+              {n !== null ? (
+                <span
+                  className={`rounded-full px-1.5 text-[10px] tabular-nums ${
+                    filtro === id
+                      ? "bg-white/20"
+                      : id === "por_confirmar" && n
+                        ? "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200"
+                        : id === "incidencias" && n
+                          ? "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
+                          : "bg-zinc-200/70 dark:bg-zinc-700"
+                  }`}
+                >
+                  {n}
+                </span>
+              ) : null}
             </button>
           ))}
         </div>
@@ -136,7 +153,7 @@ export default function RequisitosPanel({
           if (!items.length && !excluidosFase.length) return null;
           const todosFase = requisitos.filter((r) => r.fase === fase.id);
           const hechos = todosFase.filter((r) =>
-            ["verificado", "no_aplica"].includes(estados[r.id]?.estado ?? "pendiente"),
+            ["aprobado", "no_aplica"].includes(estados[r.id]?.estado ?? "pendiente"),
           ).length;
           const plegada = plegadas.has(fase.id);
           return (
@@ -208,6 +225,16 @@ export default function RequisitosPanel({
                               {item?.nota && estado === "incidencia" ? (
                                 <span className="truncate text-amber-600 dark:text-amber-400">
                                   Revisión manual
+                                </span>
+                              ) : null}
+                              {estado === "verificado" ? (
+                                <span className="truncate text-teal-600 dark:text-teal-400">
+                                  Por confirmar
+                                </span>
+                              ) : null}
+                              {estado === "aprobado" && item?.aprobacion ? (
+                                <span className="truncate text-emerald-700 dark:text-emerald-400">
+                                  {item.aprobacion.por.split(" ")[0]}
                                 </span>
                               ) : null}
                             </span>

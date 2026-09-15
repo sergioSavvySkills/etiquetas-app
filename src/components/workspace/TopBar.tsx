@@ -11,6 +11,7 @@ export default function TopBar({
   sectorId,
   certificaciones,
   resumen,
+  usuario,
   onSector,
   onToggleCert,
   onVerEtiqueta,
@@ -20,6 +21,7 @@ export default function TopBar({
   sectorId: string;
   certificaciones: string[];
   resumen: Resumen;
+  usuario: { nombre: string; rol: string; iniciales: string };
   onSector: (id: string) => void;
   onToggleCert: (id: string) => void;
   onVerEtiqueta: () => void;
@@ -150,20 +152,33 @@ export default function TopBar({
       <div className="hidden items-center gap-3 lg:flex">
         <div className="w-28">
           <div className="flex justify-between text-[10px] text-zinc-500">
-            <span>Obligatorios</span>
+            <span>Aprobados</span>
             <span className="tabular-nums">
               {resumen.obligatoriosCubiertos}/{resumen.obligatorios}
             </span>
           </div>
           <div className="mt-1 h-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
             <div
-              className="h-full rounded-full bg-zinc-900 transition-all dark:bg-zinc-100"
+              className="h-full rounded-full bg-emerald-600 transition-all dark:bg-emerald-500"
               style={{
                 width: `${resumen.obligatorios ? (resumen.obligatoriosCubiertos / resumen.obligatorios) * 100 : 0}%`,
               }}
             />
           </div>
         </div>
+      </div>
+
+      <div
+        className="hidden items-center gap-2 rounded-lg border border-zinc-200 py-1 pl-1 pr-2.5 sm:flex dark:border-zinc-800"
+        title={`${usuario.nombre} · ${usuario.rol}. Sus aprobaciones quedan firmadas con su nombre.`}
+      >
+        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-600 text-[10px] font-bold text-white">
+          {usuario.iniciales}
+        </span>
+        <span className="hidden leading-tight lg:block">
+          <span className="block text-[11px] font-medium text-zinc-800 dark:text-zinc-100">{usuario.nombre}</span>
+          <span className="block text-[10px] text-zinc-500">{usuario.rol}</span>
+        </span>
       </div>
 
       <button

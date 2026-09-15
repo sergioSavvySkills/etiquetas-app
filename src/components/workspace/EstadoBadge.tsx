@@ -5,6 +5,7 @@ import {
   IconBan,
   IconCheck,
   IconClock,
+  IconDoubleCheck,
   IconFile,
   IconLoader,
 } from "@/components/workspace/icons";
@@ -29,9 +30,14 @@ const ESTILO: Record<
     punto: "bg-violet-400",
   },
   verificado: {
-    icono: "border-emerald-500 bg-emerald-500 text-white dark:border-emerald-500",
-    chip: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
-    punto: "bg-emerald-500",
+    icono: "border-teal-400 bg-teal-50 text-teal-600 dark:border-teal-700 dark:bg-teal-950 dark:text-teal-300",
+    chip: "bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300",
+    punto: "bg-teal-400",
+  },
+  aprobado: {
+    icono: "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500",
+    chip: "bg-emerald-600 text-white dark:bg-emerald-500 dark:text-emerald-950",
+    punto: "bg-emerald-600",
   },
   incidencia: {
     icono: "border-amber-400 bg-amber-50 text-amber-600 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-300",
@@ -49,7 +55,9 @@ function Icono({ estado }: { estado: EstadoRequisito }) {
   const cls = "h-3 w-3";
   switch (estado) {
     case "verificado":
-      return <IconCheck className={cls} strokeWidth={3} />;
+      return <IconCheck className={cls} strokeWidth={2.5} />;
+    case "aprobado":
+      return <IconDoubleCheck className={cls} strokeWidth={3} />;
     case "incidencia":
       return <IconAlert className={cls} />;
     case "no_aplica":

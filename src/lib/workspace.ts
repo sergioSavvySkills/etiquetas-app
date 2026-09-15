@@ -27,13 +27,25 @@ export { ATRIBUTOS_POR_DEFECTO } from "@/lib/laboratorio";
 /* Tipos                                                                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Ciclo de vida de un requisito. «verificado» significa que el asistente da
+ * los datos por correctos, pero nada llega a la etiqueta sin pasar por
+ * «aprobado», que solo puede poner una persona (el consultor).
+ */
 export type EstadoRequisito =
   | "pendiente"
   | "recibido"
   | "analizando"
   | "verificado"
+  | "aprobado"
   | "incidencia"
   | "no_aplica";
+
+/** Quién aprobó (o descartó) el requisito y cuándo. Siempre una persona. */
+export type Aprobacion = { por: string; fecha: string };
+
+/** Estados que cuentan como resueltos para la etiqueta. */
+export const ESTADOS_FINALES: ReadonlySet<EstadoRequisito> = new Set(["aprobado", "no_aplica"]);
 
 export type FaseId =
   | "producto"
@@ -90,6 +102,8 @@ export type EstadoItem = {
   documentoIds: string[];
   datos: Dato[];
   nota?: string;
+  /** Presente cuando el estado es «aprobado» o «no_aplica» decidido por una persona. */
+  aprobacion?: Aprobacion;
 };
 
 export type AccionMensaje = {
@@ -155,7 +169,8 @@ export const ESTADOS: Record<
   pendiente: { nombre: "Pendiente", descripcion: "Aún no tenemos este dato." },
   recibido: { nombre: "Recibido", descripcion: "Documento adjuntado, sin analizar." },
   analizando: { nombre: "Analizando", descripcion: "Leyendo el documento…" },
-  verificado: { nombre: "Verificado", descripcion: "Dato comprobado y listo para la etiqueta." },
+  verificado: { nombre: "Por confirmar", descripcion: "El asistente da los datos por correctos. Falta que lo apruebe un consultor." },
+  aprobado: { nombre: "Aprobado", descripcion: "Confirmado por una persona. Listo para la etiqueta." },
   incidencia: { nombre: "Incidencia", descripcion: "Necesita revisión manual." },
   no_aplica: { nombre: "No aplica", descripcion: "No procede para este producto." },
 };
@@ -529,8 +544,12 @@ export function fechaCorta(iso: string): string {
 export type Resumen = {
   total: number;
   obligatorios: number;
+  /** Obligatorios aprobados o descartados por una persona. */
   obligatoriosCubiertos: number;
+  /** Aprobados o descartados (estado final). */
   cubiertos: number;
+  /** Verificados por el asistente, pendientes de aprobación humana. */
+  porConfirmar: number;
   pendientes: number;
   incidencias: number;
 };
@@ -542,12 +561,14 @@ export function resumir(
   let obligatorios = 0;
   let obligatoriosCubiertos = 0;
   let cubiertos = 0;
+  let porConfirmar = 0;
   let pendientes = 0;
   let incidencias = 0;
   for (const r of requisitos) {
     const e = estados[r.id]?.estado ?? "pendiente";
-    const cubierto = e === "verificado" || e === "no_aplica";
+    const cubierto = ESTADOS_FINALES.has(e);
     if (cubierto) cubiertos += 1;
+    if (e === "verificado") porConfirmar += 1;
     if (e === "incidencia") incidencias += 1;
     if (e === "pendiente" || e === "recibido" || e === "analizando") pendientes += 1;
     if (r.obligatoria) {
@@ -560,6 +581,7 @@ export function resumir(
     obligatorios,
     obligatoriosCubiertos,
     cubiertos,
+    porConfirmar,
     pendientes,
     incidencias,
   };

@@ -22,6 +22,17 @@ export const IconCheck = (p: P) => (
     <path d="M20 6 9 17l-5-5" />
   </svg>
 );
+export const IconDoubleCheck = (p: P) => (
+  <svg {...base(p)}>
+    <path d="m2 12 5 5L17 7M22 7l-9 10-1.5-1.5" />
+  </svg>
+);
+export const IconShield = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6Z" />
+    <path d="m9 12 2 2 4-4" />
+  </svg>
+);
 export const IconClock = (p: P) => (
   <svg {...base(p)}>
     <circle cx="12" cy="12" r="9" />
