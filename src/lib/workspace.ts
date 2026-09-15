@@ -18,6 +18,10 @@ import {
   mencionPorId,
   type Mencion,
 } from "@/lib/matriz";
+import { evaluarAnalisis, type Atributos } from "@/lib/laboratorio";
+
+export type { Atributos } from "@/lib/laboratorio";
+export { ATRIBUTOS_POR_DEFECTO } from "@/lib/laboratorio";
 
 /* ------------------------------------------------------------------ */
 /* Tipos                                                                */
@@ -54,7 +58,14 @@ export type Requisito = {
   origen: Origen;
   /** De dónde sale el requisito (sector, certificación, criterio del cliente…). */
   motivo: string;
+  /** Qué debe incluir el informe o el dato (checklist para el usuario). */
+  parametros?: string[];
+  /** Matiz adicional (p. ej. «puede calcularse»). */
+  nota?: string;
 };
+
+/** Requisito que no aplica a este producto, con el motivo. */
+export type Excluido = { id: string; titulo: string; fase: FaseId; motivo: string };
 
 export type Dato = { etiqueta: string; valor: string };
 
@@ -149,24 +160,6 @@ export const ESTADOS: Record<
   no_aplica: { nombre: "No aplica", descripcion: "No procede para este producto." },
 };
 
-/** Sectores en los que el análisis microbiológico es imprescindible. */
-const SECTORES_MICRO_OBLIGATORIO = new Set([
-  "carnico",
-  "pesca",
-  "lacteo",
-  "lacteos_derivados",
-  "huevos_ovoproductos",
-  "elaborados_huevo",
-  "platos_preparados",
-  "charcuteria_loncheada",
-  "kits_preparados",
-  "heladeria",
-  "grupos_especificos",
-  "infantiles_no_lactantes",
-  "productos_mar_especiales",
-  "vegetales_fermentados",
-]);
-
 /** Menciones de la matriz que ya representamos como requisitos propios. */
 const MENCIONES_BASE_CUBIERTAS = new Set([
   "denominacion",
@@ -205,11 +198,11 @@ function desdeMencion(m: Mencion, fase: FaseId, motivo: string): Requisito {
 export function construirRequisitos(
   sectorId: string,
   certIds: string[],
+  atributos: Atributos,
 ): Requisito[] {
   const sector = getSector(sectorId);
-  const nombreSector = sector?.nombre ?? "todos los alimentos";
   const general = "Reg. (UE) 1169/2011";
-  const microObligatorio = SECTORES_MICRO_OBLIGATORIO.has(sectorId);
+  const perecedero = atributos.conservacion === "refrigerado";
 
   const base: Requisito[] = [
     {
@@ -293,51 +286,15 @@ export function construirRequisitos(
     {
       id: "fecha_duracion",
       fase: "producto",
-      titulo: "Consumo preferente / caducidad",
-      descripcion:
-        "Fecha de duración mínima («consumir preferentemente») o fecha de caducidad para productos muy perecederos.",
+      titulo: perecedero ? "Fecha de caducidad" : "Fecha de consumo preferente",
+      descripcion: perecedero
+        ? "Producto muy perecedero: lleva «fecha de caducidad» (día y mes). Tras esa fecha no se considera seguro."
+        : "Fecha de duración mínima: «consumir preferentemente antes del…» o «…antes del fin de…» según la duración.",
       comoSeCubre: "Se deduce del estudio de vida útil.",
       baseLegal: `${general}, art. 9.1.f y 24, Anexo X`,
       obligatoria: true,
       origen: "dato",
-      motivo: "Obligatorio para todos los alimentos",
-    },
-    {
-      id: "info_nutricional",
-      fase: "laboratorio",
-      titulo: "Análisis nutricional",
-      descripcion:
-        "Valor energético y nutrientes por 100 g o 100 ml, en el orden y formato que fija el Reglamento.",
-      comoSeCubre: "Adjunta el informe del laboratorio. Leemos el PDF y ordenamos los nutrientes según el Reglamento 1169/2011.",
-      baseLegal: `${general}, art. 9.1.l y 30–35, Anexos XIII–XV`,
-      obligatoria: true,
-      origen: "documento",
-      motivo: "Obligatorio para todos los alimentos",
-    },
-    {
-      id: "vida_util",
-      fase: "laboratorio",
-      titulo: "Análisis de vida útil",
-      descripcion: "Estudio que justifica la fecha de consumo preferente o caducidad.",
-      comoSeCubre: "Adjunta el estudio de vida útil del laboratorio.",
-      baseLegal: `${general}, art. 24`,
-      obligatoria: true,
-      origen: "documento",
-      motivo: "Justifica la fecha de duración",
-    },
-    {
-      id: "microbiologico",
-      fase: "laboratorio",
-      titulo: "Análisis microbiológico",
-      descripcion:
-        "Comprobación de criterios microbiológicos (patógenos, mohos y levaduras…). Contrastamos los parámetros con el Reg. 2073/2005.",
-      comoSeCubre: "Adjunta el informe del laboratorio.",
-      baseLegal: "Reg. (CE) 2073/2005",
-      obligatoria: microObligatorio,
-      origen: "documento",
-      motivo: microObligatorio
-        ? `Imprescindible en ${nombreSector}`
-        : "Recomendado; obligatorio si hay criterios microbiológicos aplicables",
+      motivo: perecedero ? "Refrigerado: caducidad en vez de consumo preferente" : "Obligatorio para todos los alimentos",
     },
     {
       id: "alergenos",
@@ -379,9 +336,12 @@ export function construirRequisitos(
         "Cómo debe guardarse el producto, cerrado y una vez abierto. Obligatorio cuando el producto lo requiere.",
       comoSeCubre: "Dato del cliente; podemos sugerirlo a partir de productos similares.",
       baseLegal: `${general}, art. 9.1.g y 25`,
-      obligatoria: false,
+      obligatoria: atributos.conservacion !== "ambiente",
       origen: "dato",
-      motivo: "Obligatorio si el producto lo requiere",
+      motivo:
+        atributos.conservacion !== "ambiente"
+          ? `Producto ${atributos.conservacion}: hay que indicar la temperatura de conservación`
+          : "Obligatorio si el producto lo requiere",
     },
     {
       id: "transporte",
@@ -400,9 +360,11 @@ export function construirRequisitos(
       descripcion: "Instrucciones de uso cuando sin ellas no se puede usar bien el producto.",
       comoSeCubre: "Dato del cliente.",
       baseLegal: `${general}, art. 9.1.j y 27`,
-      obligatoria: false,
+      obligatoria: !atributos.listoParaConsumo,
       origen: "dato",
-      motivo: "Obligatorio si el producto lo requiere",
+      motivo: atributos.listoParaConsumo
+        ? "Obligatorio si el producto lo requiere"
+        : "Requiere preparación: hay que indicar cómo cocinarlo o prepararlo",
     },
     {
       id: "responsable",
@@ -431,9 +393,31 @@ export function construirRequisitos(
   const extras: Requisito[] = [];
   const vistos = new Set<string>(base.map((r) => r.id));
 
+  // Análisis de laboratorio: catálogo completo evaluado para este producto.
+  for (const a of evaluarAnalisis({ sectorId, certIds, atributos })) {
+    if (!a.aplica) continue;
+    vistos.add(a.id);
+    extras.push({
+      id: a.id,
+      fase: "laboratorio",
+      titulo: a.titulo,
+      descripcion: a.descripcion,
+      comoSeCubre: a.comoSeCubre,
+      baseLegal: a.baseLegal,
+      obligatoria: a.obligatoria,
+      origen: "documento",
+      motivo: a.motivo,
+      parametros: a.parametros,
+      nota: a.nota,
+    });
+  }
+
   for (const id of sector?.mencionesExtra ?? []) {
     const m = mencionPorId(id);
     if (!m || vistos.has(id) || MENCIONES_BASE_CUBIERTAS.has(id)) continue;
+    if (id === "fecha_congelacion" && atributos.conservacion !== "congelado") continue;
+    if (id === "peso_escurrido" && !atributos.liquidoCobertura) continue;
+    if (id === "grado_alcoholico" && !atributos.contieneAlcohol) continue;
     vistos.add(id);
     extras.push(desdeMencion(m, "sector", `Por el sector ${sector?.nombre}`));
   }
@@ -464,7 +448,44 @@ export function construirRequisitos(
     }
   }
 
+  // Menciones condicionadas por atributos que el sector no aporta por sí mismo.
+  const condicionales: [boolean, string, string][] = [
+    [atributos.contieneAlcohol, "grado_alcoholico", "Contiene más de 1,2 % vol."],
+    [atributos.conservacion === "congelado", "fecha_congelacion", "Producto congelado"],
+    [atributos.liquidoCobertura, "peso_escurrido", "Va en líquido de cobertura"],
+  ];
+  for (const [cond, id, motivo] of condicionales) {
+    const m = mencionPorId(id);
+    if (!cond || !m || vistos.has(id)) continue;
+    vistos.add(id);
+    extras.push(desdeMencion(m, "declaraciones", motivo));
+  }
+
   return [...base, ...extras];
+}
+
+/** Análisis y menciones que NO aplican a este producto, con el motivo (para mostrar por qué no están). */
+export function requisitosExcluidos(
+  sectorId: string,
+  certIds: string[],
+  atributos: Atributos,
+): Excluido[] {
+  const out: Excluido[] = [];
+  for (const a of evaluarAnalisis({ sectorId, certIds, atributos })) {
+    if (!a.aplica) out.push({ id: a.id, titulo: a.titulo, fase: "laboratorio", motivo: a.motivo });
+  }
+  const sector = getSector(sectorId);
+  const porAtributo: [string, boolean, string][] = [
+    ["fecha_congelacion", atributos.conservacion !== "congelado", "No es un producto congelado"],
+    ["peso_escurrido", !atributos.liquidoCobertura, "No va en líquido de cobertura"],
+    ["grado_alcoholico", !atributos.contieneAlcohol, "No contiene más de 1,2 % vol."],
+  ];
+  for (const [id, excluir, motivo] of porAtributo) {
+    if (!excluir || !sector?.mencionesExtra.includes(id)) continue;
+    const m = mencionPorId(id);
+    if (m) out.push({ id, titulo: m.etiquetaCorta, fase: "sector", motivo });
+  }
+  return out;
 }
 
 /* ------------------------------------------------------------------ */

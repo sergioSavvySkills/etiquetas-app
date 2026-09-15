@@ -3,7 +3,7 @@
  * Producto: mermelada artesanal de fresa, 250 g.
  */
 
-import type { Documento, EstadoItem, Mensaje } from "@/lib/workspace";
+import type { Atributos, Documento, EstadoItem, Mensaje } from "@/lib/workspace";
 
 /** Fecha local fija (sin zona) para que servidor y cliente pinten la misma hora. */
 const enHora = (h: number, m: number) =>
@@ -14,6 +14,14 @@ export const DEMO_PRODUCTO = {
   cliente: "Conservas del Sur, S.L.",
   sectorId: "frutas_hortalizas",
   certificaciones: ["artesano"],
+  atributos: {
+    conservacion: "ambiente",
+    listoParaConsumo: true,
+    contieneAlcohol: false,
+    llevaClaims: false,
+    liquidoCobertura: false,
+    ingredienteUnicoSinTransformar: false,
+  } satisfies Atributos,
 };
 
 export const DEMO_DOCUMENTOS: Documento[] = [
@@ -74,6 +82,23 @@ export const DEMO_DOCUMENTOS: Documento[] = [
     ],
   },
   {
+    id: "doc_fq",
+    nombre: "Informe_fisicoquimico_2026-0413.pdf",
+    tipo: "pdf",
+    tamano: 610_000,
+    subidoEn: enHora(9, 42),
+    paginas: 2,
+    legible: true,
+    resumen:
+      "Boletín físico-químico del mismo laboratorio. Los valores cumplen el RD 670/1990 para «confitura extra» (≥ 45 g de fruta y ≥ 60 °Brix).",
+    extractos: [
+      { etiqueta: "Sólidos solubles", valor: "65 °Brix" },
+      { etiqueta: "Fruta por 100 g", valor: "55 g" },
+      { etiqueta: "pH", valor: "3,2" },
+      { etiqueta: "Actividad de agua (Aw)", valor: "0,82" },
+    ],
+  },
+  {
     id: "doc_micro",
     nombre: "Analisis_microbiologico_L2026-014.pdf",
     tipo: "pdf",
@@ -124,7 +149,7 @@ export const DEMO_ESTADOS: Record<string, EstadoItem> = {
       { etiqueta: "Base", valor: "24 meses según estudio de vida útil" },
     ],
   },
-  info_nutricional: {
+  lab_nutricional: {
     estado: "verificado",
     documentoIds: ["doc_nutri"],
     datos: [
@@ -138,12 +163,24 @@ export const DEMO_ESTADOS: Record<string, EstadoItem> = {
       { etiqueta: "Sal", valor: "0,02 g" },
     ],
   },
-  vida_util: {
+  lab_vida_util: {
     estado: "verificado",
     documentoIds: ["doc_vida"],
     datos: [{ etiqueta: "Vida útil", valor: "24 meses desde la fabricación" }],
   },
-  microbiologico: {
+  lab_fisicoquimico: {
+    estado: "verificado",
+    documentoIds: ["doc_fq"],
+    datos: [
+      { etiqueta: "Sólidos solubles", valor: "65 °Brix" },
+      { etiqueta: "Fruta por 100 g", valor: "55 g" },
+      { etiqueta: "pH / Aw", valor: "3,2 / 0,82" },
+      { etiqueta: "Cumple", valor: "RD 670/1990 · categoría «confitura extra»" },
+    ],
+  },
+  lab_contaminantes: { estado: "pendiente", documentoIds: [], datos: [] },
+  lab_plaguicidas: { estado: "pendiente", documentoIds: [], datos: [] },
+  lab_microbiologico: {
     estado: "incidencia",
     documentoIds: ["doc_micro"],
     datos: [],
@@ -194,7 +231,7 @@ export const DEMO_ESTADOS: Record<string, EstadoItem> = {
   },
   porcentaje_fruta: {
     estado: "verificado",
-    documentoIds: ["doc_ft", "doc_nutri"],
+    documentoIds: ["doc_ft", "doc_fq"],
     datos: [
       { etiqueta: "Mención", valor: "Elaborado con 55 g de fruta por 100 g" },
       { etiqueta: "Azúcares totales", valor: "Contenido total de azúcares: 65 g por 100 g" },
@@ -234,16 +271,16 @@ export const DEMO_MENSAJES: Mensaje[] = [
     autor: "usuario",
     hora: enHora(9, 42),
     texto:
-      "Es una mermelada artesanal de fresa en tarro de 250 g. Os paso la ficha técnica del proveedor y la analítica nutricional.",
-    adjuntos: ["doc_ft", "doc_nutri"],
+      "Es una mermelada artesanal de fresa en tarro de 250 g, se conserva a temperatura ambiente. Os paso la ficha técnica del proveedor y las analíticas nutricional y físico-química.",
+    adjuntos: ["doc_ft", "doc_nutri", "doc_fq"],
   },
   {
     id: "m3",
     autor: "asistente",
     hora: enHora(9, 43),
     texto:
-      "He clasificado el producto como Frutas, hortalizas y derivados (confituras) y he activado la mención de producto artesano. Además del Reg. (UE) 1169/2011 le aplica el RD 670/1990 de confituras, así que hace falta indicar la fruta por 100 g y los azúcares totales.\n\nDe la ficha técnica he sacado ingredientes con porcentajes, trazas de frutos de cáscara, el envase y los datos del fabricante. El informe nutricional está completo y ya lo he ordenado según el Reglamento.",
-    requisitosRef: ["lista_ingredientes", "alergenos", "info_nutricional", "porcentaje_fruta", "responsable"],
+      "He clasificado el producto como Frutas, hortalizas y derivados (confituras) y he activado la mención de producto artesano. Perfil: ambiente, listo para consumo, sin alcohol ni claims. Con eso, los análisis que le aplican son nutricional, vida útil, físico-químico (RD 670/1990), contaminantes y residuos de plaguicidas; el microbiológico queda como recomendado. No aplican grado alcohólico, OMG, alérgenos analíticos ni sensorial; puedes verlo en «No aplican» del panel izquierdo.\n\nDe la ficha técnica he sacado ingredientes con porcentajes, trazas de frutos de cáscara, el envase y los datos del fabricante. El nutricional está completo y ordenado según el Reglamento. El físico-químico cumple «confitura extra»: 65 °Brix y 55 g de fruta por 100 g.",
+    requisitosRef: ["lista_ingredientes", "alergenos", "lab_nutricional", "lab_fisicoquimico", "porcentaje_fruta", "responsable"],
   },
   {
     id: "m4",
@@ -257,7 +294,7 @@ export const DEMO_MENSAJES: Mensaje[] = [
     autor: "asistente",
     hora: enHora(10, 16),
     texto:
-      "Estudio de vida útil leído: 24 meses a temperatura ambiente. Propongo «Consumir preferentemente antes del fin de: ver tapa» y estoy redactando las condiciones de conservación.\n\nEl análisis microbiológico es un escaneado sin texto y no puedo leerlo. Lo he marcado con incidencia para revisión manual; si tienes el PDF original del laboratorio, adjúntalo y lo vuelvo a intentar.\n\nMe faltan: lote, registro sanitario, foto del producto y la justificación de «artesano». ¿Empezamos por el registro sanitario (RGSEAA)?",
-    requisitosRef: ["vida_util", "fecha_duracion", "microbiologico", "lote", "registro_sanitario"],
+      "Estudio de vida útil leído: 24 meses a temperatura ambiente. Propongo «Consumir preferentemente antes del fin de: ver tapa» y estoy redactando las condiciones de conservación.\n\nEl análisis microbiológico es un escaneado sin texto y no puedo leerlo. Lo he marcado con incidencia para revisión manual; si tienes el PDF original del laboratorio, adjúntalo y lo vuelvo a intentar.\n\nMe faltan: lote, registro sanitario, los informes de contaminantes y de residuos de plaguicidas, la foto del producto y la justificación de «artesano». ¿Empezamos por el registro sanitario (RGSEAA)?",
+    requisitosRef: ["lab_vida_util", "fecha_duracion", "lab_microbiologico", "lab_contaminantes", "lab_plaguicidas", "lote", "registro_sanitario"],
   },
 ];

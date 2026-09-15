@@ -40,7 +40,7 @@ export default function EtiquetaPreview({
       r.obligatoria &&
       !["verificado", "no_aplica"].includes(estados[r.id]?.estado ?? "pendiente"),
   );
-  const nutri = estados.info_nutricional?.estado === "verificado" ? estados.info_nutricional.datos : [];
+  const nutri = activos.has("lab_nutricional") && estados.lab_nutricional?.estado === "verificado" ? estados.lab_nutricional.datos : [];
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -109,7 +109,7 @@ export default function EtiquetaPreview({
             </table>
           ) : (
             <div className="mt-3">
-              <Campo id="info_nutricional" activos={activos} onVer={onVerRequisito} texto={undefined} pendiente="Tabla de información nutricional" />
+              <Campo id="lab_nutricional" activos={activos} onVer={onVerRequisito} texto={undefined} pendiente="Tabla de información nutricional" />
             </div>
           )}
 

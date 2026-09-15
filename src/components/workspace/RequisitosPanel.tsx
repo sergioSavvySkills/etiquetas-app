@@ -3,13 +3,16 @@
 import { useMemo, useState } from "react";
 import {
   FASES,
+  type Atributos,
   type EstadoItem,
+  type Excluido,
   type FaseId,
   type Requisito,
   type Resumen,
 } from "@/lib/workspace";
 import { EstadoIcono } from "@/components/workspace/EstadoBadge";
-import { IconChevron, IconFile, IconSearch } from "@/components/workspace/icons";
+import PerfilProducto from "@/components/workspace/PerfilProducto";
+import { IconBan, IconChevron, IconFile, IconSearch } from "@/components/workspace/icons";
 
 type Filtro = "todos" | "pendientes" | "incidencias";
 
@@ -17,6 +20,9 @@ export default function RequisitosPanel({
   requisitos,
   estados,
   resumen,
+  excluidos,
+  atributos,
+  onAtributos,
   seleccionado,
   onSeleccionar,
   normativa,
@@ -24,6 +30,9 @@ export default function RequisitosPanel({
   requisitos: Requisito[];
   estados: Record<string, EstadoItem>;
   resumen: Resumen;
+  excluidos: Excluido[];
+  atributos: Atributos;
+  onAtributos: (a: Atributos) => void;
   seleccionado: string | null;
   onSeleccionar: (id: string) => void;
   normativa: string[];
@@ -119,9 +128,12 @@ export default function RequisitosPanel({
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2">
+        <PerfilProducto atributos={atributos} onChange={onAtributos} />
+
         {FASES.map((fase) => {
           const items = visibles.filter((r) => r.fase === fase.id);
-          if (!items.length) return null;
+          const excluidosFase = excluidos.filter((e) => e.fase === fase.id);
+          if (!items.length && !excluidosFase.length) return null;
           const todosFase = requisitos.filter((r) => r.fase === fase.id);
           const hechos = todosFase.filter((r) =>
             ["verificado", "no_aplica"].includes(estados[r.id]?.estado ?? "pendiente"),
@@ -205,6 +217,24 @@ export default function RequisitosPanel({
                     );
                   })}
                 </ul>
+              ) : null}
+              {!plegada && excluidosFase.length && filtro === "todos" && !busqueda ? (
+                <details className="mx-2 mt-1 rounded-md">
+                  <summary className="cursor-pointer select-none px-1 py-1 text-[11px] text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
+                    No aplican a este producto · {excluidosFase.length}
+                  </summary>
+                  <ul className="mb-1 mt-0.5 space-y-1 pl-1">
+                    {excluidosFase.map((e) => (
+                      <li key={e.id} className="flex items-start gap-2 px-1 py-0.5">
+                        <IconBan className="mt-0.5 h-3 w-3 shrink-0 text-zinc-300 dark:text-zinc-600" />
+                        <span className="min-w-0">
+                          <span className="block text-[12px] text-zinc-400 line-through dark:text-zinc-500">{e.titulo}</span>
+                          <span className="block text-[10px] leading-snug text-zinc-400 dark:text-zinc-500">{e.motivo}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
               ) : null}
             </section>
           );

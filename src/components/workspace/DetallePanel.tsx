@@ -115,7 +115,24 @@ export function DetalleRequisito({
 
         <Bloque titulo="Cómo se cubre">
           <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">{r.comoSeCubre}</p>
+          {r.nota ? <p className="mt-1.5 text-xs text-zinc-500">{r.nota}</p> : null}
         </Bloque>
+
+        {r.parametros?.length ? (
+          <Bloque titulo="Qué debe incluir el informe">
+            <ul className="space-y-1">
+              {r.parametros.map((pm) => (
+                <li
+                  key={pm}
+                  className="flex items-start gap-2 rounded-md border border-zinc-200 px-2.5 py-1.5 text-xs text-zinc-700 dark:border-zinc-800 dark:text-zinc-200"
+                >
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-400" />
+                  {pm}
+                </li>
+              ))}
+            </ul>
+          </Bloque>
+        ) : null}
 
         {item.datos.length ? (
           <Bloque titulo="Datos para la etiqueta">

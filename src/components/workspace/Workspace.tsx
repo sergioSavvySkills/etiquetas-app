@@ -5,9 +5,11 @@ import { getSector } from "@/lib/matriz";
 import {
   construirRequisitos,
   estadoVacio,
+  requisitosExcluidos,
   resumir,
   tipoDocumento,
   type AccionMensaje,
+  type Atributos,
   type Documento,
   type EstadoItem,
   type EstadoRequisito,
@@ -42,6 +44,7 @@ const uid = () =>
 export default function Workspace() {
   const [sectorId, setSectorId] = useState(DEMO_PRODUCTO.sectorId);
   const [certificaciones, setCertificaciones] = useState<string[]>(DEMO_PRODUCTO.certificaciones);
+  const [atributos, setAtributos] = useState<Atributos>(DEMO_PRODUCTO.atributos);
   const [estados, setEstados] = useState<Record<string, EstadoItem>>(DEMO_ESTADOS);
   const [documentos, setDocumentos] = useState<Record<string, Documento>>(() =>
     Object.fromEntries(DEMO_DOCUMENTOS.map((d) => [d.id, d])),
@@ -59,8 +62,12 @@ export default function Workspace() {
   }, []);
 
   const requisitos = useMemo(
-    () => construirRequisitos(sectorId, certificaciones),
-    [sectorId, certificaciones],
+    () => construirRequisitos(sectorId, certificaciones, atributos),
+    [sectorId, certificaciones, atributos],
+  );
+  const excluidos = useMemo(
+    () => requisitosExcluidos(sectorId, certificaciones, atributos),
+    [sectorId, certificaciones, atributos],
   );
   const resumen = useMemo(() => resumir(requisitos, estados), [requisitos, estados]);
   const sector = getSector(sectorId);
@@ -283,7 +290,7 @@ export default function Workspace() {
     const s: string[] = [];
     if (estados.registro_sanitario?.estado === "pendiente") s.push("El RGSEAA es 21.012345/SE");
     if (estados.lote?.estado === "pendiente") s.push("El lote es L2026-014");
-    if (estados.microbiologico?.estado === "incidencia") s.push("Introduzco a mano el microbiológico");
+    if (estados.lab_microbiologico?.estado === "incidencia") s.push("Introduzco a mano el microbiológico");
     if (estados.conservacion?.estado !== "verificado") s.push("Sugiere condiciones de conservación");
     return s.slice(0, 3);
   }, [estados]);
@@ -348,6 +355,9 @@ export default function Workspace() {
             requisitos={requisitos}
             estados={estados}
             resumen={resumen}
+            excluidos={excluidos}
+            atributos={atributos}
+            onAtributos={setAtributos}
             seleccionado={vista.tipo === "requisito" ? vista.id : null}
             onSeleccionar={verRequisito}
             normativa={sector?.normativaBase ?? ["Reg. (UE) 1169/2011"]}

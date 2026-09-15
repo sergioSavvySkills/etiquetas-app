@@ -15,6 +15,14 @@ partir de su documentación (ruta `/`):
   necesitan lo mismo. Cada requisito tiene estado (pendiente, recibido,
   analizando, verificado, incidencia, no aplica) y guía (qué es, por qué se
   pide, cómo se cubre, base legal).
+  La fase «Análisis de laboratorio» sale de un catálogo completo
+  (`src/lib/laboratorio.ts`): nutricional, vida útil, microbiológico,
+  físico-químico, grado alcohólico, contaminantes, residuos de plaguicidas,
+  alérgenos analíticos, soporte de claims, OMG, autenticidad y sensorial. Cada
+  uno decide si aplica, si es obligatorio y qué parámetros debe incluir el
+  informe según el sector, las certificaciones y el **perfil del producto**
+  (conservación, listo para consumo, alcohol, claims, líquido de cobertura,
+  ingrediente único). Los que no aplican se muestran con su motivo.
 - **Panel central — Chat.** Conversación con el asistente donde se escriben
   datos y se adjuntan documentos (arrastrar y soltar). El asistente vincula
   cada documento con los requisitos que cubre.
