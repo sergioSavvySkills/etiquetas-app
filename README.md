@@ -4,6 +4,30 @@ Aplicación web construida con [Next.js](https://nextjs.org) (App Router), pensa
 para desplegarse en [Vercel](https://vercel.com). El backend y la base de datos
 se gestionan en [Xano](https://xano.com).
 
+## Qué hace
+
+Espacio de trabajo para redactar la etiqueta de un producto alimentario a
+partir de su documentación (ruta `/`):
+
+- **Panel izquierdo — Requisitos.** Lista dinámica de todo lo que hace falta
+  para la etiqueta. Se calcula con la matriz maestra (`src/data/matriz.json`)
+  según el tipo de producto y sus certificaciones: no todos los productos
+  necesitan lo mismo. Cada requisito tiene estado (pendiente, recibido,
+  analizando, verificado, incidencia, no aplica) y guía (qué es, por qué se
+  pide, cómo se cubre, base legal).
+- **Panel central — Chat.** Conversación con el asistente donde se escriben
+  datos y se adjuntan documentos (arrastrar y soltar). El asistente vincula
+  cada documento con los requisitos que cubre.
+- **Panel derecho — Detalle / Etiqueta.** Al pulsar un requisito o un
+  documento se ve su contexto: visor, datos extraídos, requisitos que cubre y
+  acciones. Sin selección muestra la vista previa de la etiqueta, que se
+  rellena sola con lo verificado y marca lo que falta.
+
+Estado actual: **solo UI/UX**. Los datos son de demostración y el análisis de
+documentos está simulado en el cliente (`src/lib/demo.ts`,
+`src/components/workspace/`). La versión anterior (asistente paso a paso) se
+conserva en `/wizard`.
+
 ## Stack
 
 - **Next.js 16** (App Router, TypeScript)
