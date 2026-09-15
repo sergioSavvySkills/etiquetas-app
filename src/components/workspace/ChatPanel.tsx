@@ -122,6 +122,22 @@ export default function ChatPanel({
               onVerRequisito={onVerRequisito}
             />
           ))}
+          {mensajes.length <= 1 ? (
+            <label className="mx-auto mt-2 flex w-full max-w-md cursor-pointer flex-col items-center gap-1.5 rounded-2xl border-2 border-dashed border-zinc-300 px-6 py-8 text-center text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-700 dark:border-zinc-700 dark:hover:border-zinc-500 dark:hover:text-zinc-200">
+              <IconUpload className="h-5 w-5" />
+              <span className="text-sm font-medium">Arrastra aquí la ficha técnica del proveedor</span>
+              <span className="text-xs">o cualquier analítica, foto o certificado. PDF, imagen u hoja de cálculo.</span>
+              <input
+                type="file"
+                multiple
+                hidden
+                onChange={(e) => {
+                  añadirFicheros(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          ) : null}
           <div ref={finRef} />
         </div>
       </div>

@@ -15,13 +15,8 @@ import {
   type EstadoRequisito,
   type Mensaje,
 } from "@/lib/workspace";
-import {
-  DEMO_DOCUMENTOS,
-  DEMO_ESTADOS,
-  DEMO_MENSAJES,
-  DEMO_PRODUCTO,
-  DEMO_USUARIO,
-} from "@/lib/demo";
+import { DEMO_USUARIO } from "@/lib/demo";
+import { cargarEscenario, type EscenarioId } from "@/lib/escenarios";
 import TopBar from "@/components/workspace/TopBar";
 import RequisitosPanel from "@/components/workspace/RequisitosPanel";
 import ChatPanel from "@/components/workspace/ChatPanel";
@@ -42,15 +37,17 @@ const uid = () =>
     ? crypto.randomUUID()
     : Math.random().toString(36).slice(2);
 
-export default function Workspace() {
-  const [sectorId, setSectorId] = useState(DEMO_PRODUCTO.sectorId);
-  const [certificaciones, setCertificaciones] = useState<string[]>(DEMO_PRODUCTO.certificaciones);
-  const [atributos, setAtributos] = useState<Atributos>(DEMO_PRODUCTO.atributos);
-  const [estados, setEstados] = useState<Record<string, EstadoItem>>(DEMO_ESTADOS);
+export default function Workspace({ escenario = "en_curso" }: { escenario?: EscenarioId }) {
+  const [inicial] = useState(() => cargarEscenario(escenario));
+  const [nombreProducto, setNombreProducto] = useState(inicial.producto.nombre);
+  const [sectorId, setSectorId] = useState(inicial.producto.sectorId);
+  const [certificaciones, setCertificaciones] = useState<string[]>(inicial.producto.certificaciones);
+  const [atributos, setAtributos] = useState<Atributos>(inicial.atributos);
+  const [estados, setEstados] = useState<Record<string, EstadoItem>>(inicial.estados);
   const [documentos, setDocumentos] = useState<Record<string, Documento>>(() =>
-    Object.fromEntries(DEMO_DOCUMENTOS.map((d) => [d.id, d])),
+    Object.fromEntries(inicial.documentos.map((d) => [d.id, d])),
   );
-  const [mensajes, setMensajes] = useState<Mensaje[]>(DEMO_MENSAJES);
+  const [mensajes, setMensajes] = useState<Mensaje[]>(inicial.mensajes);
   const [vista, setVista] = useState<Vista>({ tipo: "etiqueta" });
   const [lateralAbierto, setLateralAbierto] = useState(false);
   const [panelMovil, setPanelMovil] = useState<PanelMovil>("chat");
@@ -211,6 +208,20 @@ export default function Workspace() {
       guardarDato("ean", "EAN-13", ean[0], true);
       afectados.push("ean");
     }
+    if (!nombreProducto && texto.trim() && !rgseaa && !lote && !ean) {
+      // Primer mensaje de un producto nuevo: lo tomamos como descripción y proponemos el nombre.
+      const candidato = texto
+        .split(/[.,;\n]/)[0]
+        .replace(/^(es|son)\s+(una?|el|la|unos?|unas?)\s+/i, "")
+        .replace(/\s+(en|con)\s+(tarro|bote|bolsa|lata|envase|botella|frasco|caja|bandeja|formato)\b.*$/i, "")
+        .trim();
+      if (candidato) {
+        const nombre = candidato.charAt(0).toUpperCase() + candidato.slice(1);
+        setNombreProducto(nombre);
+        guardarDato("denominacion", "Nombre comercial", nombre, true);
+        afectados.push("denominacion");
+      }
+    }
 
     if (nuevos.length) {
       const candidatos = pendientesParaDocumento().slice(0, 4);
@@ -313,12 +324,18 @@ export default function Workspace() {
 
   const sugerencias = useMemo(() => {
     const s: string[] = [];
+    if (!mensajes.some((m) => m.autor === "usuario")) {
+      return [
+        "Es una mermelada artesanal de fresa en tarro de 250 g, a temperatura ambiente",
+        "¿Qué documentos necesito para empezar?",
+      ];
+    }
     if (estados.registro_sanitario?.estado === "pendiente") s.push("El RGSEAA es 21.012345/SE");
     if (estados.lote?.estado === "pendiente") s.push("El lote es L2026-014");
     if (estados.lab_microbiologico?.estado === "incidencia") s.push("Introduzco a mano el microbiológico");
     if (estados.conservacion?.estado !== "verificado") s.push("Sugiere condiciones de conservación");
     return s.slice(0, 3);
-  }, [estados]);
+  }, [estados, mensajes]);
 
   const toggleCert = (id: string) =>
     setCertificaciones((c) => (c.includes(id) ? c.filter((x) => x !== id) : [...c, id]));
@@ -352,7 +369,7 @@ export default function Workspace() {
       />
     ) : (
       <EtiquetaPreview
-        nombreProducto={DEMO_PRODUCTO.nombre}
+        nombreProducto={nombreProducto}
         requisitos={requisitos}
         estados={estados}
         resumen={resumen}
@@ -364,8 +381,9 @@ export default function Workspace() {
   return (
     <div className="flex h-dvh flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
       <TopBar
-        nombreProducto={DEMO_PRODUCTO.nombre}
-        cliente={DEMO_PRODUCTO.cliente}
+        nombreProducto={nombreProducto}
+        cliente={inicial.producto.cliente}
+        escenario={escenario}
         sectorId={sectorId}
         certificaciones={certificaciones}
         resumen={resumen}

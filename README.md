@@ -40,6 +40,10 @@ partir de su documentación (ruta `/`):
   acciones. Sin selección muestra la vista previa de la etiqueta, que se
   rellena sola con lo verificado y marca lo que falta.
 
+Escenarios de demo: `/?escenario=vacio` (producto nuevo, sin nada),
+`/?escenario=en_curso` (por defecto) y `/?escenario=completo` (todo aprobado,
+etiqueta lista). También se cambian desde el selector «Demo» de la cabecera.
+
 Estado actual: **solo UI/UX**. Los datos son de demostración y el análisis de
 documentos está simulado en el cliente (`src/lib/demo.ts`,
 `src/components/workspace/`). La versión anterior (asistente paso a paso) se

@@ -54,10 +54,6 @@ export default function RequisitosPanel({
     });
   }, [requisitos, estados, filtro, busqueda]);
 
-  const porcentaje = resumen.total
-    ? Math.round((resumen.cubiertos / resumen.total) * 100)
-    : 0;
-
   const togglePlegada = (id: FaseId) =>
     setPlegadas((s) => {
       const n = new Set(s);

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CERTIFICACIONES, SECTORES } from "@/lib/matriz";
 import type { Resumen } from "@/lib/workspace";
+import { ESCENARIOS, type EscenarioId } from "@/lib/escenarios";
 import { IconChevron, IconTag, IconX } from "@/components/workspace/icons";
 
 export default function TopBar({
@@ -12,12 +13,14 @@ export default function TopBar({
   certificaciones,
   resumen,
   usuario,
+  escenario,
   onSector,
   onToggleCert,
   onVerEtiqueta,
 }: {
   nombreProducto: string;
   cliente: string;
+  escenario: EscenarioId;
   sectorId: string;
   certificaciones: string[];
   resumen: Resumen;
@@ -57,11 +60,33 @@ export default function TopBar({
       <div className="mx-1 hidden h-6 w-px bg-zinc-200 dark:bg-zinc-800 sm:block" />
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-50">{nombreProducto}</p>
+        <p className={`truncate text-sm font-semibold ${nombreProducto ? "text-zinc-900 dark:text-zinc-50" : "italic text-zinc-400"}`}>
+          {nombreProducto || "Producto sin nombre"}
+        </p>
         <p className="truncate text-[11px] text-zinc-500">{cliente}</p>
       </div>
 
       <div className="hidden items-center gap-2 md:flex">
+        <label className="relative" title="Escenario de la maqueta (solo demo)">
+          <span className="sr-only">Escenario de demostración</span>
+          <select
+            value={escenario}
+            onChange={(e) => {
+              const url = new URL(window.location.href);
+              url.searchParams.set("escenario", e.target.value);
+              window.location.assign(url.toString());
+            }}
+            className="appearance-none rounded-lg border border-dashed border-violet-300 bg-violet-50 py-1.5 pl-3 pr-7 text-[11px] font-medium text-violet-800 outline-none hover:border-violet-400 dark:border-violet-800 dark:bg-violet-950/40 dark:text-violet-200"
+          >
+            {ESCENARIOS.map((e) => (
+              <option key={e.id} value={e.id}>
+                Demo: {e.nombre}
+              </option>
+            ))}
+          </select>
+          <IconChevron className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-violet-400" />
+        </label>
+
         <label className="relative">
           <span className="sr-only">Tipo de producto</span>
           <select

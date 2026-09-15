@@ -79,7 +79,11 @@ export default function EtiquetaPreview({
       <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
         {/* Etiqueta */}
         <div className="rounded-lg border border-zinc-300 bg-[#fbfaf6] p-4 text-[11px] leading-snug text-zinc-900 shadow-sm dark:border-zinc-700 dark:bg-zinc-100">
-          <p className="text-[15px] font-bold leading-tight">{nombreProducto}</p>
+          {nombreProducto ? (
+            <p className="text-[15px] font-bold leading-tight">{nombreProducto}</p>
+          ) : (
+            <PendienteInline id="denominacion" activos={activos} onVer={onVerRequisito} texto="Nombre del producto" block />
+          )}
           <Campo sinConfirmar={sinConfirmar} id="denominacion" activos={activos} onVer={onVerRequisito} texto={v("denominacion", "Denominación legal")} pendiente="Denominación legal" className="italic" />
           {activos.has("porcentaje_fruta") ? (
             <div className="mt-1">
