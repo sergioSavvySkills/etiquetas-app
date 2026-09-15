@@ -104,6 +104,8 @@ export type EstadoItem = {
   nota?: string;
   /** Presente cuando el estado es «aprobado» o «no_aplica» decidido por una persona. */
   aprobacion?: Aprobacion;
+  /** Datos tipados del editor (lista de ingredientes, alérgenos, nutricional…) para reeditar sin pérdida. */
+  estructura?: Record<string, unknown>;
 };
 
 export type AccionMensaje = {

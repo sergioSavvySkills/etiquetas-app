@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { CERTIFICACIONES, SECTORES } from "@/lib/matriz";
 import type { Resumen } from "@/lib/workspace";
 import { ESCENARIOS, type EscenarioId } from "@/lib/escenarios";
-import { IconChevron, IconTag, IconX } from "@/components/workspace/icons";
+import { IconChevron, IconTag, IconWand, IconX } from "@/components/workspace/icons";
 
 export default function TopBar({
   nombreProducto,
@@ -17,10 +17,12 @@ export default function TopBar({
   onSector,
   onToggleCert,
   onVerEtiqueta,
+  onEditarNombre,
 }: {
   nombreProducto: string;
   cliente: string;
   escenario: EscenarioId;
+  onEditarNombre: () => void;
   sectorId: string;
   certificaciones: string[];
   resumen: Resumen;
@@ -59,12 +61,20 @@ export default function TopBar({
 
       <div className="mx-1 hidden h-6 w-px bg-zinc-200 dark:bg-zinc-800 sm:block" />
 
-      <div className="min-w-0 flex-1">
-        <p className={`truncate text-sm font-semibold ${nombreProducto ? "text-zinc-900 dark:text-zinc-50" : "italic text-zinc-400"}`}>
-          {nombreProducto || "Producto sin nombre"}
-        </p>
-        <p className="truncate text-[11px] text-zinc-500">{cliente}</p>
-      </div>
+      <button
+        type="button"
+        onClick={onEditarNombre}
+        title="Editar el nombre del producto"
+        className="group min-w-0 flex-1 rounded-lg px-2 py-1 text-left transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
+      >
+        <span className="flex items-center gap-1.5">
+          <span className={`truncate text-sm font-semibold ${nombreProducto ? "text-zinc-900 dark:text-zinc-50" : "italic text-zinc-400"}`}>
+            {nombreProducto || "Producto sin nombre"}
+          </span>
+          <IconWand className="h-3 w-3 shrink-0 text-zinc-300 opacity-0 transition group-hover:opacity-100 dark:text-zinc-500" />
+        </span>
+        <span className="block truncate text-[11px] text-zinc-500">{cliente}</span>
+      </button>
 
       <div className="hidden items-center gap-2 md:flex">
         <label className="relative" title="Escenario de la maqueta (solo demo)">

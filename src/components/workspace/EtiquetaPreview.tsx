@@ -24,6 +24,7 @@ export default function EtiquetaPreview({
   estados,
   resumen,
   onVerRequisito,
+  onEditarRequisito,
   onAprobar,
 }: {
   nombreProducto: string;
@@ -31,6 +32,7 @@ export default function EtiquetaPreview({
   estados: Record<string, EstadoItem>;
   resumen: Resumen;
   onVerRequisito: (id: string) => void;
+  onEditarRequisito: (id: string) => void;
   onAprobar: (id: string) => void;
 }) {
   const v = (id: string, etiqueta?: string) => valor(estados, id, etiqueta);
@@ -70,7 +72,7 @@ export default function EtiquetaPreview({
           Vista previa de la etiqueta
         </h2>
         <p className="mt-1 text-xs text-zinc-500">
-          Se rellena con lo aprobado. Lo verificado sin aprobar aparece{" "}
+          Pulsa cualquier dato para editarlo. Lo verificado sin aprobar aparece{" "}
           <span className="rounded-sm bg-teal-100 px-1 text-teal-800 dark:bg-teal-900 dark:text-teal-200">así</span>
           {" "}y lo que falta, marcado.
         </p>
@@ -80,25 +82,32 @@ export default function EtiquetaPreview({
         {/* Etiqueta */}
         <div className="rounded-lg border border-zinc-300 bg-[#fbfaf6] p-4 text-[11px] leading-snug text-zinc-900 shadow-sm dark:border-zinc-700 dark:bg-zinc-100">
           {nombreProducto ? (
-            <p className="text-[15px] font-bold leading-tight">{nombreProducto}</p>
+            <p
+              className="cursor-pointer rounded-sm text-[15px] font-bold leading-tight hover:bg-zinc-900/5"
+              title="Editar nombre"
+              onClick={() => onEditarRequisito("denominacion")}
+            >
+              {nombreProducto}
+            </p>
           ) : (
             <PendienteInline id="denominacion" activos={activos} onVer={onVerRequisito} texto="Nombre del producto" block />
           )}
-          <Campo sinConfirmar={sinConfirmar} id="denominacion" activos={activos} onVer={onVerRequisito} texto={v("denominacion", "Denominación legal")} pendiente="Denominación legal" className="italic" />
+          <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="denominacion" activos={activos} onVer={onVerRequisito} texto={v("denominacion", "Denominación legal")} pendiente="Denominación legal" className="italic" />
           {activos.has("porcentaje_fruta") ? (
             <div className="mt-1">
-              <Campo sinConfirmar={sinConfirmar} id="porcentaje_fruta" activos={activos} onVer={onVerRequisito} texto={v("porcentaje_fruta", "Mención")} pendiente="% de fruta" />
-              <Campo sinConfirmar={sinConfirmar} id="porcentaje_fruta" activos={activos} onVer={onVerRequisito} texto={v("porcentaje_fruta", "Azúcares totales")} pendiente="Azúcares totales" />
+              <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="porcentaje_fruta" activos={activos} onVer={onVerRequisito} texto={v("porcentaje_fruta", "Mención")} pendiente="% de fruta" />
+              <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="porcentaje_fruta" activos={activos} onVer={onVerRequisito} texto={v("porcentaje_fruta", "Azúcares totales")} pendiente="Azúcares totales" />
             </div>
           ) : null}
 
           <div className="mt-3">
             <span className="font-bold">Ingredientes: </span>
-            <Campo sinConfirmar={sinConfirmar} id="lista_ingredientes" activos={activos} onVer={onVerRequisito} inline texto={v("lista_ingredientes")} pendiente="lista de ingredientes" />
+            <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="lista_ingredientes" activos={activos} onVer={onVerRequisito} inline texto={v("lista_ingredientes")} pendiente="lista de ingredientes" />
           </div>
           <div className="mt-1">
             <Campo
               sinConfirmar={sinConfirmar}
+              onEditar={onEditarRequisito}
               id="alergenos"
               activos={activos}
               onVer={onVerRequisito}
@@ -117,7 +126,9 @@ export default function EtiquetaPreview({
               className={`mt-3 w-full border-collapse border border-zinc-800 text-[10px] ${
                 sinConfirmar.has("lab_nutricional") ? "bg-teal-100/60 outline outline-1 outline-dashed outline-teal-500" : ""
               }`}
-              title={sinConfirmar.has("lab_nutricional") ? "Por confirmar" : undefined}
+              title={sinConfirmar.has("lab_nutricional") ? "Por confirmar · pulsa para revisar" : "Pulsa para editar la tabla"}
+              onClick={() => (sinConfirmar.has("lab_nutricional") ? onVerRequisito : onEditarRequisito)("lab_nutricional")}
+              style={{ cursor: "pointer" }}
             >
               <thead>
                 <tr>
@@ -138,20 +149,20 @@ export default function EtiquetaPreview({
             </table>
           ) : (
             <div className="mt-3">
-              <Campo sinConfirmar={sinConfirmar} id="lab_nutricional" activos={activos} onVer={onVerRequisito} texto={undefined} pendiente="Tabla de información nutricional" />
+              <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="lab_nutricional" activos={activos} onVer={onVerRequisito} texto={undefined} pendiente="Tabla de información nutricional" />
             </div>
           )}
 
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Campo sinConfirmar={sinConfirmar} id="fecha_duracion" activos={activos} onVer={onVerRequisito} texto={v("fecha_duracion", "Mención propuesta")} pendiente="Consumir preferentemente antes de…" />
-            <Campo sinConfirmar={sinConfirmar} id="lote" activos={activos} onVer={onVerRequisito} texto={v("lote") ? `Lote: ${v("lote")}` : undefined} pendiente="Lote" />
+            <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="fecha_duracion" activos={activos} onVer={onVerRequisito} texto={v("fecha_duracion", "Mención propuesta")} pendiente="Consumir preferentemente antes de…" />
+            <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="lote" activos={activos} onVer={onVerRequisito} texto={v("lote") ? `Lote: ${v("lote")}` : undefined} pendiente="Lote" />
           </div>
           <div className="mt-1">
-            <Campo sinConfirmar={sinConfirmar} id="conservacion" activos={activos} onVer={onVerRequisito} texto={v("conservacion")} pendiente="Condiciones de conservación" />
+            <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="conservacion" activos={activos} onVer={onVerRequisito} texto={v("conservacion")} pendiente="Condiciones de conservación" />
           </div>
           {activos.has("modo_empleo") && v("modo_empleo") ? (
             <div className="mt-1">
-              <Campo sinConfirmar={sinConfirmar} id="modo_empleo" activos={activos} onVer={onVerRequisito} texto={v("modo_empleo")} />
+              <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="modo_empleo" activos={activos} onVer={onVerRequisito} texto={v("modo_empleo")} />
             </div>
           ) : null}
 
@@ -159,6 +170,7 @@ export default function EtiquetaPreview({
             <div className="min-w-0 flex-1">
               <Campo
                 sinConfirmar={sinConfirmar}
+                onEditar={onEditarRequisito}
                 id="responsable"
                 activos={activos}
                 onVer={onVerRequisito}
@@ -169,7 +181,7 @@ export default function EtiquetaPreview({
                 }
                 pendiente="Empresa responsable y dirección"
               />
-              <Campo sinConfirmar={sinConfirmar} id="registro_sanitario" activos={activos} onVer={onVerRequisito} texto={v("registro_sanitario") ? `RGSEAA ${v("registro_sanitario")}` : undefined} pendiente="Nº RGSEAA" />
+              <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="registro_sanitario" activos={activos} onVer={onVerRequisito} texto={v("registro_sanitario") ? `RGSEAA ${v("registro_sanitario")}` : undefined} pendiente="Nº RGSEAA" />
             </div>
             <div className="shrink-0 text-right">
               <p className="text-[16px] font-bold leading-none">
@@ -184,7 +196,7 @@ export default function EtiquetaPreview({
           <div className="mt-3 flex items-end justify-between gap-2">
             <CodigoBarras valor={v("ean")} />
             {activos.has("artesano_justificado") ? (
-              <Campo sinConfirmar={sinConfirmar} id="artesano_justificado" activos={activos} onVer={onVerRequisito} texto={v("artesano_justificado") ? "Producto artesano" : undefined} pendiente="Sello artesano" />
+              <Campo sinConfirmar={sinConfirmar} onEditar={onEditarRequisito} id="artesano_justificado" activos={activos} onVer={onVerRequisito} texto={v("artesano_justificado") ? "Producto artesano" : undefined} pendiente="Sello artesano" />
             ) : null}
           </div>
         </div>
@@ -291,6 +303,7 @@ function Campo({
   activos,
   sinConfirmar,
   onVer,
+  onEditar,
   texto,
   pendiente,
   inline = false,
@@ -300,6 +313,7 @@ function Campo({
   activos: Set<string>;
   sinConfirmar?: Set<string>;
   onVer: (id: string) => void;
+  onEditar?: (id: string) => void;
   texto?: string;
   pendiente?: string;
   inline?: boolean;
@@ -307,11 +321,12 @@ function Campo({
 }) {
   if (!activos.has(id)) return null;
   if (texto) {
-    const marca = sinConfirmar?.has(id)
+    const porConfirmar = sinConfirmar?.has(id);
+    const marca = porConfirmar
       ? " cursor-pointer rounded-sm bg-teal-100/80 decoration-teal-500 decoration-dashed underline-offset-2 hover:underline dark:bg-teal-900/50"
-      : "";
-    const titulo = sinConfirmar?.has(id) ? "Por confirmar · pulsa para revisar" : undefined;
-    const onClick = sinConfirmar?.has(id) ? () => onVer(id) : undefined;
+      : " cursor-pointer rounded-sm hover:bg-zinc-900/5 hover:outline hover:outline-1 hover:outline-dashed hover:outline-zinc-400";
+    const titulo = porConfirmar ? "Por confirmar · pulsa para revisar" : "Pulsa para editar";
+    const onClick = porConfirmar ? () => onVer(id) : () => (onEditar ?? onVer)(id);
     return inline ? (
       <span className={className + marca} title={titulo} onClick={onClick}>{texto}</span>
     ) : (

@@ -22,11 +22,12 @@ import RequisitosPanel from "@/components/workspace/RequisitosPanel";
 import ChatPanel from "@/components/workspace/ChatPanel";
 import { DetalleDocumento, DetalleRequisito } from "@/components/workspace/DetallePanel";
 import EtiquetaPreview from "@/components/workspace/EtiquetaPreview";
+import type { Guardado } from "@/components/workspace/Editores";
 import { IconChat, IconList, IconTag } from "@/components/workspace/icons";
 
 type Vista =
   | { tipo: "etiqueta" }
-  | { tipo: "requisito"; id: string }
+  | { tipo: "requisito"; id: string; editar?: boolean }
   | { tipo: "documento"; id: string };
 
 type PanelMovil = "requisitos" | "chat" | "detalle";
@@ -76,8 +77,8 @@ export default function Workspace({ escenario = "en_curso" }: { escenario?: Esce
 
   /* ---------------- navegación ---------------- */
 
-  const verRequisito = useCallback((id: string) => {
-    setVista({ tipo: "requisito", id });
+  const verRequisito = useCallback((id: string, editar = false) => {
+    setVista({ tipo: "requisito", id, editar });
     setLateralAbierto(true);
     setPanelMovil("detalle");
   }, []);
@@ -128,6 +129,22 @@ export default function Workspace({ escenario = "en_curso" }: { escenario?: Esce
       nota: undefined,
       datos: [...it.datos.filter((d) => d.etiqueta !== etiqueta), { etiqueta, valor }],
     }));
+
+  /** Guardado desde un editor tipado: decisión humana, queda aprobado con firma. */
+  const guardarDesdeEditor = (id: string, g: Guardado) => {
+    actualizar(id, (it) => ({
+      ...it,
+      estado: "aprobado",
+      nota: undefined,
+      aprobacion: firma(),
+      datos: g.datos,
+      estructura: g.estructura ?? it.estructura,
+    }));
+    if (id === "denominacion") {
+      const nombre = g.datos.find((d) => d.etiqueta === "Nombre comercial")?.valor;
+      if (nombre) setNombreProducto(nombre);
+    }
+  };
 
   const aprobar = (id: string) =>
     actualizar(id, (it) => ({ ...it, estado: "aprobado", nota: undefined, aprobacion: firma() }));
@@ -349,8 +366,10 @@ export default function Workspace({ escenario = "en_curso" }: { escenario?: Esce
         item={estados[requisitoActivo.id] ?? estadoVacio()}
         documentos={documentos}
         onCerrar={cerrarLateral}
+        key={`${requisitoActivo.id}-${vista.tipo === "requisito" && vista.editar ? "e" : "v"}`}
+        editarInicial={vista.tipo === "requisito" && Boolean(vista.editar)}
         onEstado={(e, nota) => cambiarEstado(requisitoActivo.id, e, nota)}
-        onDato={(et, v) => guardarDato(requisitoActivo.id, et, v)}
+        onGuardar={(g) => guardarDesdeEditor(requisitoActivo.id, g)}
         onAprobar={() => aprobar(requisitoActivo.id)}
         onRechazar={(motivo) => rechazar(requisitoActivo.id, motivo)}
         onRetirarAprobacion={() => retirarAprobacion(requisitoActivo.id)}
@@ -374,6 +393,7 @@ export default function Workspace({ escenario = "en_curso" }: { escenario?: Esce
         estados={estados}
         resumen={resumen}
         onVerRequisito={verRequisito}
+        onEditarRequisito={(id) => verRequisito(id, true)}
         onAprobar={aprobar}
       />
     );
@@ -384,6 +404,7 @@ export default function Workspace({ escenario = "en_curso" }: { escenario?: Esce
         nombreProducto={nombreProducto}
         cliente={inicial.producto.cliente}
         escenario={escenario}
+        onEditarNombre={() => verRequisito("denominacion", true)}
         sectorId={sectorId}
         certificaciones={certificaciones}
         resumen={resumen}

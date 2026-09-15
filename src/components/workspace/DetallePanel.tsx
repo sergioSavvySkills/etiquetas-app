@@ -10,7 +10,8 @@ import {
   type EstadoRequisito,
   type Requisito,
 } from "@/lib/workspace";
-import { IconDoubleCheck, IconShield } from "@/components/workspace/icons";
+import { IconDoubleCheck, IconShield, IconWand } from "@/components/workspace/icons";
+import EditorRequisito, { nombreEditor, type Guardado } from "@/components/workspace/Editores";
 import DocumentoCard, { IconoDocumento } from "@/components/workspace/DocumentoCard";
 import { EstadoChip, EstadoPunto } from "@/components/workspace/EstadoBadge";
 import {
@@ -33,11 +34,12 @@ export function DetalleRequisito({
   documentos,
   onCerrar,
   onEstado,
-  onDato,
+  onGuardar,
   onAprobar,
   onRechazar,
   onRetirarAprobacion,
   usuario,
+  editarInicial = false,
   onAdjuntar,
   onPreguntar,
   onVerDocumento,
@@ -47,7 +49,8 @@ export function DetalleRequisito({
   documentos: Record<string, Documento>;
   onCerrar: () => void;
   onEstado: (estado: EstadoRequisito, nota?: string) => void;
-  onDato: (etiqueta: string, valor: string) => void;
+  onGuardar: (g: Guardado) => void;
+  editarInicial?: boolean;
   onAprobar: () => void;
   onRechazar: (motivo: string) => void;
   onRetirarAprobacion: () => void;
@@ -56,7 +59,7 @@ export function DetalleRequisito({
   onPreguntar: (texto: string) => void;
   onVerDocumento: (id: string) => void;
 }) {
-  const [valorManual, setValorManual] = useState("");
+  const [editando, setEditando] = useState(editarInicial);
   const [rechazando, setRechazando] = useState(false);
   const [motivoRechazo, setMotivoRechazo] = useState("");
   const fase = FASES.find((f) => f.id === r.fase);
@@ -260,18 +263,44 @@ export function DetalleRequisito({
           </Bloque>
         ) : null}
 
-        {item.datos.length ? (
-          <Bloque titulo="Datos para la etiqueta">
-            <dl className="divide-y divide-zinc-100 rounded-lg border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
-              {item.datos.map((d) => (
-                <div key={d.etiqueta} className="grid grid-cols-[minmax(0,40%)_1fr] gap-3 px-3 py-2">
-                  <dt className="text-xs text-zinc-500">{d.etiqueta}</dt>
-                  <dd className="text-xs font-medium text-zinc-800 dark:text-zinc-100">{d.valor}</dd>
-                </div>
-              ))}
-            </dl>
+        {/* Datos para la etiqueta: lectura o edición según el tipo de requisito */}
+        {editando && !noAplica ? (
+          <EditorRequisito
+            key={r.id}
+            requisito={r}
+            item={item}
+            onCancelar={() => setEditando(false)}
+            onGuardar={(g) => {
+              onGuardar(g);
+              setEditando(false);
+            }}
+          />
+        ) : (
+          <Bloque titulo={item.datos.length ? "Datos para la etiqueta" : "Dato"}>
+            {item.datos.length ? (
+              <dl className="divide-y divide-zinc-100 rounded-lg border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+                {item.datos.map((d) => (
+                  <div key={d.etiqueta} className="grid grid-cols-[minmax(0,40%)_1fr] gap-3 px-3 py-2">
+                    <dt className="text-xs text-zinc-500">{d.etiqueta}</dt>
+                    <dd className="text-xs font-medium text-zinc-800 dark:text-zinc-100">{d.valor}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : !noAplica ? (
+              <p className="text-xs text-zinc-500">Todavía no hay ningún valor. Puedes introducirlo a mano o adjuntar un documento.</p>
+            ) : null}
+            {!noAplica ? (
+              <button
+                type="button"
+                onClick={() => setEditando(true)}
+                className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+              >
+                <IconWand className="h-3.5 w-3.5" />
+                {item.datos.length ? nombreEditor(r) : r.origen === "declaracion" ? "Elegir redacción" : "Introducir a mano"}
+              </button>
+            ) : null}
           </Bloque>
-        ) : null}
+        )}
 
         <Bloque
           titulo={docs.length ? `Documentos vinculados · ${docs.length}` : "Documentos"}
@@ -306,53 +335,6 @@ export function DetalleRequisito({
           ) : null}
         </Bloque>
 
-        {!noAplica && r.origen !== "documento" ? (
-          <Bloque titulo={r.origen === "declaracion" ? "Confirmar" : aprobado ? "Corregir el dato" : "Introducir el dato a mano"}>
-            {r.origen === "declaracion" ? (
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => onDato("Declaración", "Se incluirá en la etiqueta")}
-                  title="Queda aprobado con tu firma"
-                  className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
-                >
-                  Sí, se incluye
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onEstado("no_aplica", "Confirmado por el usuario.")}
-                  className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-medium text-zinc-600 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                >
-                  No aplica
-                </button>
-              </div>
-            ) : (
-              <form
-                className="flex gap-2"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!valorManual.trim()) return;
-                  onDato(r.titulo, valorManual.trim());
-                  setValorManual("");
-                }}
-              >
-                <input
-                  value={valorManual}
-                  onChange={(e) => setValorManual(e.target.value)}
-                  placeholder="Escribe el valor…"
-                  className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs text-zinc-900 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
-                />
-                <button
-                  type="submit"
-                  disabled={!valorManual.trim()}
-                  className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700 disabled:opacity-30 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
-                >
-                  Guardar
-                </button>
-              </form>
-            )}
-          </Bloque>
-        ) : null}
       </div>
 
       <footer className="border-t border-zinc-200 px-5 py-3 dark:border-zinc-800">
