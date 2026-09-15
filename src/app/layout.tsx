@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Etiquetas App",
-  description: "Aplicación de etiquetas. Frontend en Next.js, backend en Xano.",
+  title: "Etiquetas · Espacio de trabajo",
+  description:
+    "Analiza la documentación de un producto alimentario, comprueba los requisitos de etiquetado y genera la etiqueta.",
 };
 
 export default function RootLayout({
