@@ -14,7 +14,7 @@ import { EstadoIcono } from "@/components/workspace/EstadoBadge";
 import PerfilProducto from "@/components/workspace/PerfilProducto";
 import { IconBan, IconChevron, IconFile, IconSearch } from "@/components/workspace/icons";
 
-type Filtro = "todos" | "pendientes" | "por_confirmar" | "incidencias";
+type Filtro = "todos" | "aprobados" | "pendientes" | "por_confirmar" | "incidencias";
 
 export default function RequisitosPanel({
   requisitos,
@@ -45,6 +45,7 @@ export default function RequisitosPanel({
     const q = busqueda.trim().toLowerCase();
     return requisitos.filter((r) => {
       const e = estados[r.id]?.estado ?? "pendiente";
+      if (filtro === "aprobados" && e !== "aprobado" && !(e === "no_aplica" && estados[r.id]?.aprobacion)) return false;
       if (filtro === "pendientes" && !["pendiente", "recibido", "analizando"].includes(e)) return false;
       if (filtro === "por_confirmar" && e !== "verificado" && !(e === "no_aplica" && !estados[r.id]?.aprobacion)) return false;
       if (filtro === "incidencias" && e !== "incidencia") return false;
@@ -72,65 +73,78 @@ export default function RequisitosPanel({
           <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
             Requisitos de la etiqueta
           </h2>
-          <span className="text-xs tabular-nums text-zinc-500">
-            {resumen.cubiertos}/{resumen.total}
-          </span>
+          {filtro !== "todos" ? (
+            <button
+              type="button"
+              onClick={() => setFiltro("todos")}
+              className="text-[11px] text-zinc-500 underline-offset-2 hover:text-zinc-900 hover:underline dark:hover:text-zinc-100"
+            >
+              Quitar filtro
+            </button>
+          ) : (
+            <span className="text-xs tabular-nums text-zinc-500">
+              {resumen.cubiertos}/{resumen.total}
+            </span>
+          )}
         </div>
-        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
-          <div
-            className="h-full rounded-full bg-emerald-500 transition-all"
-            style={{ width: `${porcentaje}%` }}
-          />
+
+        {/* Barra segmentada por estado */}
+        <div
+          className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800"
+          role="img"
+          aria-label={`${resumen.cubiertos} aprobados, ${resumen.porConfirmar} por confirmar, ${resumen.incidencias} incidencias, ${resumen.pendientes} pendientes`}
+        >
+          {(
+            [
+              [resumen.cubiertos, "bg-emerald-600 dark:bg-emerald-500"],
+              [resumen.porConfirmar, "bg-teal-400"],
+              [resumen.incidencias, "bg-amber-400"],
+            ] as [number, string][]
+          ).map(([n, cls], i) =>
+            n ? (
+              <div
+                key={i}
+                className={`${cls} transition-all`}
+                style={{ width: `${(n / Math.max(resumen.total, 1)) * 100}%` }}
+              />
+            ) : null,
+          )}
         </div>
         <p className="mt-1.5 text-[11px] text-zinc-500">
           {resumen.obligatoriosCubiertos} de {resumen.obligatorios} obligatorios aprobados
-          {resumen.incidencias > 0 ? (
-            <>
-              {" · "}
-              <span className="text-amber-600 dark:text-amber-400">
-                {resumen.incidencias} {resumen.incidencias === 1 ? "incidencia" : "incidencias"}
-              </span>
-            </>
-          ) : null}
         </p>
 
-        <div className="mt-3 flex flex-wrap gap-1">
+        {/* Contadores que filtran */}
+        <div className="mt-3 grid grid-cols-4 gap-1">
           {(
             [
-              ["todos", "Todos", null],
-              ["pendientes", "Pendientes", resumen.pendientes],
-              ["por_confirmar", "Por confirmar", resumen.porConfirmar],
-              ["incidencias", "Incidencias", resumen.incidencias],
-            ] as [Filtro, string, number | null][]
-          ).map(([id, nombre, n]) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setFiltro(id)}
-              className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-medium transition ${
-                filtro === id
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-              }`}
-            >
-              {nombre}
-              {n !== null ? (
-                <span
-                  className={`rounded-full px-1.5 text-[10px] tabular-nums ${
-                    filtro === id
-                      ? "bg-white/20"
-                      : id === "por_confirmar" && n
-                        ? "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200"
-                        : id === "incidencias" && n
-                          ? "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
-                          : "bg-zinc-200/70 dark:bg-zinc-700"
-                  }`}
-                >
-                  {n}
+              ["aprobados", "Aprobados", resumen.cubiertos, "text-emerald-700 dark:text-emerald-400"],
+              ["por_confirmar", "Por confirmar", resumen.porConfirmar, "text-teal-700 dark:text-teal-300"],
+              ["pendientes", "Pendientes", resumen.pendientes, "text-zinc-700 dark:text-zinc-200"],
+              ["incidencias", "Incidencias", resumen.incidencias, "text-amber-700 dark:text-amber-400"],
+            ] as [Filtro, string, number, string][]
+          ).map(([id, nombre, n, texto]) => {
+            const activo = filtro === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setFiltro(activo ? "todos" : id)}
+                aria-pressed={activo}
+                title={activo ? "Quitar filtro" : `Ver solo ${nombre.toLowerCase()}`}
+                className={`flex min-w-0 flex-col items-start overflow-hidden rounded-lg border px-1.5 py-1.5 text-left transition ${
+                  activo
+                    ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+                    : "border-zinc-200 bg-white hover:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-600"
+                }`}
+              >
+                <span className={`text-base font-semibold leading-none tabular-nums ${activo ? "" : texto}`}>{n}</span>
+                <span className="mt-1 whitespace-nowrap text-[10px] leading-none tracking-tight text-current opacity-80">
+                  {nombre}
                 </span>
-              ) : null}
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
 
         <label className="mt-3 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-xs text-zinc-500 focus-within:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-900">

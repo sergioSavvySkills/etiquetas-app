@@ -375,7 +375,7 @@ export default function Workspace() {
         onVerEtiqueta={verEtiqueta}
       />
 
-      <div className="relative grid min-h-0 flex-1 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)_400px]">
+      <div className="relative grid min-h-0 flex-1 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_400px]">
         {/* Izquierda: requisitos */}
         <div
           className={`min-h-0 border-r border-zinc-200 dark:border-zinc-800 ${
